@@ -1,0 +1,83 @@
+Build ByteBite — a real-time food ordering and delivery platform 
+using every capability available to you.
+
+---
+
+ROLES
+Three roles with a simple dropdown switcher (no auth yet):
+- Customer: browse menu, cart, checkout, live order tracker
+- Restaurant: incoming orders dashboard, status controls
+- Driver: available pickups, accept, mark delivered
+
+---
+
+REAL-TIME ENGINE
+Use Socket.io for all live updates. Every order status change
+broadcasts instantly to all connected role views.
+
+Order lifecycle: Placed → Accepted → Cooking → Ready → Delivered
+
+---
+
+BACKEND
+Node.js + Express server. Structure it properly:
+/server
+  index.js         → Express + Socket.io bootstrap
+  routes/          → menu, orders, cart endpoints  
+  socket/          → all WebSocket event handlers
+  seed.js          → run on startup via shell
+
+Use Replit DB for cart and active session state.
+Use Supabase for orders, menu items, restaurants, users.
+Store all API keys in Replit Secrets — never hardcode.
+
+---
+
+PAYMENTS
+Integrate Stripe Checkout on order placement.
+Handle the Stripe webhook to confirm payment before 
+creating the order in Supabase.
+
+---
+
+DATA SEEDING
+On server startup, run a shell script that checks if 
+restaurant data exists and seeds it if not.
+Seed: 1 restaurant, 12 menu items across 3 categories,
+2 driver accounts, realistic names and prices.
+
+---
+
+TESTING
+After building each WebSocket event, write and run a test 
+for it. Fix any failures before moving to the next feature.
+Use your web search to check current Socket.io v4 patterns 
+if needed.
+
+---
+
+FRONTEND
+React with Tailwind CSS.
+Reference shadcn/ui patterns for components.
+- Dark theme, orange/amber accent colors
+- Glassmorphism order cards
+- Framer Motion on every status transition
+- Loading skeletons not spinners
+- Mobile-first customer view
+- Desktop-optimized restaurant and driver dashboards
+- Every button and card has hover and active states
+
+---
+
+AUTONOMY
+Work through the full build without stopping unless 
+you hit a blocker. Build in this order:
+1. Backend server + Socket.io events
+2. Supabase schema + seed script
+3. Customer role (menu → cart → checkout → tracker)
+4. Restaurant dashboard
+5. Driver dashboard
+6. Polish transitions and states
+
+Use your judgment on layout, spacing, and UX details.
+Make it feel like a real product.

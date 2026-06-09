@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "ByteBite"
+version = "1.0.0"
+id = "artifacts/bytebite"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18763
+
+[services.development]
+run = "pnpm --filter @workspace/bytebite run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bytebite", "run", "build" ]
+publicDir = "artifacts/bytebite/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18763"
+BASE_PATH = "/"
