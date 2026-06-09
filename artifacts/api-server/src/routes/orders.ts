@@ -10,6 +10,7 @@ import {
 } from "@workspace/api-zod";
 import { emitOrderCreated, emitOrderStatusChanged } from "../socket";
 import { logger } from "../lib/logger";
+import { supabase } from "../lib/supabase";
 
 const router: IRouter = Router();
 
@@ -78,6 +79,21 @@ router.post("/orders", async (req, res): Promise<void> => {
     status: "placed",
     paymentStatus: "pending",
   }).returning();
+
+  if (supabase) {
+    supabase.from("orders").insert({
+      customer_name: order.customerName,
+      restaurant_id: order.restaurantId,
+      restaurant_name: order.restaurantName,
+      total: order.total,
+      delivery_address: order.deliveryAddress,
+      items: order.items,
+      status: order.status,
+      payment_status: order.paymentStatus,
+    }).then(({ error }) => {
+      if (error) logger.debug({ err: error.message }, "Supabase order sync failed (tables may not be set up)");
+    });
+  }
 
   emitOrderCreated({
     id: order.id,

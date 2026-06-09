@@ -5,12 +5,25 @@ import { Input } from "@/components/ui/input";
 import { ShoppingBag, Navigation } from "lucide-react";
 import { Button } from "./ui/button";
 import { CartSidebar } from "./cart-sidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { role, setRole, driverName, setDriverName, cart } = useAppStore();
   const [, setLocation] = useLocation();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const controls = useAnimation();
+  
+  const cartQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  useEffect(() => {
+    if (cartQuantity > 0) {
+      controls.start({
+        scale: [1, 1.4, 1],
+        transition: { duration: 0.3 }
+      });
+    }
+  }, [cartQuantity, controls]);
 
   const handleRoleChange = (newRole: any) => {
     setRole(newRole);
@@ -20,11 +33,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex flex-col font-sans selection:bg-amber-500/30">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/70 backdrop-blur-xl">
+    <div className="min-h-[100dvh] bg-[#0A0A0A] text-zinc-50 flex flex-col font-sans selection:bg-primary/30">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0A0A0A]/70 backdrop-blur-xl">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-amber-500 hover:text-amber-400 transition-colors">
-            <Navigation className="w-6 h-6 fill-amber-500" />
+          <Link href="/" className="flex items-center gap-2 text-primary hover:text-[#FF6B6B] transition-colors">
+            <Navigation className="w-6 h-6 fill-primary" />
             <span className="text-xl font-bold tracking-tight">ByteBite</span>
           </Link>
 
@@ -34,15 +47,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 value={driverName}
                 onChange={(e) => setDriverName(e.target.value)}
                 placeholder="Driver Name"
-                className="w-32 sm:w-48 bg-zinc-900/50 border-white/10 hidden sm:flex"
+                className="w-32 sm:w-48 bg-[#111111] border-white/10 hidden sm:flex"
               />
             )}
             
             <Select value={role} onValueChange={handleRoleChange}>
-              <SelectTrigger className="w-[130px] bg-zinc-900/50 border-white/10 text-zinc-100">
+              <SelectTrigger className="w-[130px] bg-[#111111] border-white/10 text-zinc-100">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-white/10 text-zinc-100">
+              <SelectContent className="bg-[#111111] border-white/10 text-zinc-100">
                 <SelectItem value="customer">Customer</SelectItem>
                 <SelectItem value="restaurant">Restaurant</SelectItem>
                 <SelectItem value="driver">Driver</SelectItem>
@@ -53,13 +66,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Button
                 variant="outline"
                 size="icon"
-                className="relative bg-zinc-900/50 border-white/10 hover:bg-zinc-800 hover:text-amber-500 text-zinc-300"
+                className="relative bg-[#111111] border-white/10 hover:bg-zinc-800 hover:text-primary text-zinc-300"
                 onClick={() => setIsCartOpen(true)}
               >
-                <ShoppingBag className="w-4 h-4" />
-                {cart.length > 0 && (
-                  <span className="absolute -top-2 -right-2 w-5 h-5 bg-amber-500 text-zinc-950 rounded-full text-xs flex items-center justify-center font-bold">
-                    {cart.reduce((acc, item) => acc + item.quantity, 0)}
+                <motion.div id="cart-icon" animate={controls}>
+                  <ShoppingBag className="w-4 h-4" />
+                </motion.div>
+                {cartQuantity > 0 && (
+                  <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-white rounded-full text-xs flex items-center justify-center font-bold">
+                    {cartQuantity}
                   </span>
                 )}
               </Button>
@@ -68,7 +83,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full relative">
         {children}
       </main>
 

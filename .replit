@@ -29,3 +29,9 @@ externalPort = 80
 [[ports]]
 localPort = 18763
 externalPort = 3000
+
+[userenv]
+
+[userenv.shared]
+SUPABASE_URL = "https://lieqkendajydwqgjofkm.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxpZXFrZW5kYWp5ZHdxZ2pvZmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTQ1MTQsImV4cCI6MjA5NjU3MDUxNH0.A9XFkkEjQe17lWHMxVeTCtu4wJ2CwJG-WBrDKMg4rHw"

@@ -45,35 +45,35 @@
 }
 
 :root {
-  --background: 240 10% 3.9%;
+  --background: 0 0% 4%;
   --foreground: 0 0% 98%;
 
-  --card: 240 10% 3.9%;
+  --card: 0 0% 7%;
   --card-foreground: 0 0% 98%;
-  --card-border: 240 3.7% 15.9%;
+  --card-border: 0 0% 15%;
 
-  --popover: 240 10% 3.9%;
+  --popover: 0 0% 7%;
   --popover-foreground: 0 0% 98%;
-  --popover-border: 240 3.7% 15.9%;
+  --popover-border: 0 0% 15%;
 
-  --primary: 32 100% 50%; /* Orange/Amber */
+  --primary: 356 78% 54%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 240 3.7% 15.9%;
+  --secondary: 0 0% 15%;
   --secondary-foreground: 0 0% 98%;
 
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
 
-  --accent: 32 100% 50%;
+  --accent: 356 78% 54%;
   --accent-foreground: 0 0% 100%;
 
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 32 100% 50%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 356 78% 54%;
 
   --radius: 0.75rem;
   --app-font-sans: 'Inter', sans-serif;
@@ -83,27 +83,27 @@
 
 .dark {
   /* Using same variables to enforce dark theme everywhere */
-  --background: 240 10% 3.9%;
+  --background: 0 0% 4%;
   --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
+  --card: 0 0% 7%;
   --card-foreground: 0 0% 98%;
-  --card-border: 240 3.7% 15.9%;
-  --popover: 240 10% 3.9%;
+  --card-border: 0 0% 15%;
+  --popover: 0 0% 7%;
   --popover-foreground: 0 0% 98%;
-  --popover-border: 240 3.7% 15.9%;
-  --primary: 32 100% 50%;
+  --popover-border: 0 0% 15%;
+  --primary: 356 78% 54%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 240 3.7% 15.9%;
+  --secondary: 0 0% 15%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 32 100% 50%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 356 78% 54%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 32 100% 50%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 356 78% 54%;
 }
 
 @layer base {

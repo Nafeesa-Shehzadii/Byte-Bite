@@ -8,6 +8,7 @@ import { useLocation } from "wouter";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const { cart, removeFromCart, addToCart, clearCart, cartRestaurantId, cartRestaurantName } = useAppStore();
@@ -21,6 +22,7 @@ export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChang
   const createCheckout = useCheckout ? useCheckout() : null;
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const formattedTotal = (total / 100).toFixed(2);
 
   const handleCheckout = async () => {
     if (!name || !address) {
@@ -64,15 +66,15 @@ export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChang
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-zinc-950/95 backdrop-blur-2xl border-l border-white/10 text-zinc-50 w-full sm:max-w-md flex flex-col p-0 shadow-2xl">
-        <div className="p-6 border-b border-white/10 flex items-center justify-between">
+      <SheetContent className="bg-[#0A0A0A]/95 backdrop-blur-2xl border-l border-white/10 text-zinc-50 w-full sm:max-w-md flex flex-col p-0 shadow-2xl">
+        <div className="p-6 border-b border-white/10 flex items-center justify-between bg-[#0A0A0A]">
           <SheetTitle className="text-zinc-50 text-xl font-bold">Your Order</SheetTitle>
         </div>
         
-        <ScrollArea className="flex-1 p-6">
+        <ScrollArea className="flex-1 p-6 bg-[#0A0A0A]">
           {cart.length === 0 ? (
             <div className="text-center text-zinc-500 mt-20 space-y-4">
-              <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 bg-[#111111] rounded-full flex items-center justify-center mx-auto">
                 <Trash2 className="w-6 h-6 text-zinc-700" />
               </div>
               <p>Your cart is empty.</p>
@@ -80,17 +82,17 @@ export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChang
           ) : (
             <div className="space-y-6">
               {cartRestaurantName && (
-                <p className="text-amber-500 font-medium text-sm mb-4 border-b border-white/10 pb-2">
+                <p className="text-primary font-medium text-sm mb-4 border-b border-white/10 pb-2">
                   Ordering from {cartRestaurantName}
                 </p>
               )}
               {cart.map(item => (
-                <div key={item.menuItemId} className="flex items-center gap-4 bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                <div key={item.menuItemId} className="flex items-center gap-4 bg-[#111111] p-4 rounded-xl border border-white/5 hover:border-primary/20 transition-colors">
                   <div className="flex-1">
                     <h4 className="font-bold text-sm leading-tight">{item.name}</h4>
                     <p className="text-zinc-400 text-sm mt-1">${(item.price / 100).toFixed(2)}</p>
                   </div>
-                  <div className="flex items-center gap-2 bg-zinc-950 rounded-lg p-1 border border-white/10">
+                  <div className="flex items-center gap-2 bg-[#0A0A0A] rounded-lg p-1 border border-white/10">
                     <button 
                       className="w-7 h-7 flex items-center justify-center hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-white transition-colors disabled:opacity-50"
                       onClick={() => {
@@ -103,7 +105,14 @@ export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChang
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="w-6 text-center text-sm font-mono">{item.quantity}</span>
+                    <motion.span 
+                      key={item.quantity}
+                      initial={{ scale: 1.4 }}
+                      animate={{ scale: 1 }}
+                      className="w-6 text-center text-sm font-mono inline-block"
+                    >
+                      {item.quantity}
+                    </motion.span>
                     <button 
                       className="w-7 h-7 flex items-center justify-center hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-white transition-colors"
                       onClick={() => addToCart({ ...item, quantity: 1 }, cartRestaurantId!, cartRestaurantName!)}
@@ -118,10 +127,20 @@ export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChang
         </ScrollArea>
 
         {cart.length > 0 && (
-          <div className="p-6 border-t border-white/10 bg-zinc-950 space-y-4 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-10 relative">
-            <div className="flex justify-between text-lg font-bold">
+          <div className="p-6 border-t border-white/10 bg-[#0A0A0A] space-y-4 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-10 relative">
+            <div className="flex justify-between text-lg font-bold items-center">
               <span>Total</span>
-              <span className="text-amber-500 font-mono">${(total / 100).toFixed(2)}</span>
+              <AnimatePresence mode="popLayout">
+                <motion.span 
+                  key={formattedTotal}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="text-primary font-mono block"
+                >
+                  ${formattedTotal}
+                </motion.span>
+              </AnimatePresence>
             </div>
             
             <div className="space-y-3 pt-4 border-t border-white/10">
@@ -129,16 +148,16 @@ export function CartSidebar({ open, onOpenChange }: { open: boolean, onOpenChang
                 placeholder="Your Name" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
-                className="bg-zinc-900 border-white/10 text-white placeholder:text-zinc-500 h-12"
+                className="bg-[#111111] border-white/10 text-white placeholder:text-zinc-500 h-12"
               />
               <Input 
                 placeholder="Delivery Address" 
                 value={address} 
                 onChange={(e) => setAddress(e.target.value)} 
-                className="bg-zinc-900 border-white/10 text-white placeholder:text-zinc-500 h-12"
+                className="bg-[#111111] border-white/10 text-white placeholder:text-zinc-500 h-12"
               />
               <Button 
-                className="w-full bg-amber-500 text-zinc-950 hover:bg-amber-600 font-bold text-lg h-12 mt-2 shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all"
+                className="w-full bg-primary text-white hover:bg-[#FF6B6B] font-bold text-lg h-12 mt-2 transition-all shadow-[0_0_20px_rgba(230,57,70,0.2)] hover:shadow-[0_0_30px_rgba(230,57,70,0.4)]"
                 onClick={handleCheckout}
                 disabled={createOrder.isPending}
               >
