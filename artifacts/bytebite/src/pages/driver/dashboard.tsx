@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation, MapPin, Package, AlertCircle } from "lucide-react";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { DriverStats } from "@/components/dashboard/driver-stats";
 
 export default function DriverDashboard() {
   const { user } = useAuth();
@@ -98,6 +99,9 @@ export default function DriverDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Stats */}
+      <DriverStats orders={myOrders || []} />
 
       {activeMyOrders.length > 0 && (
         <div className="space-y-6">

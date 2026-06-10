@@ -2,7 +2,7 @@ import { useGetOrder, getGetOrderQueryKey } from "@workspace/api-client-react";
 import { useParams, Link } from "wouter";
 import { AnimatePresence, motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin, Package, ArrowLeft } from "lucide-react";
+import { MapPin, Package, ArrowLeft, ClipboardList, CheckCircle, Flame, PackageCheck, Truck } from "lucide-react";
 
 const STATUS_STEPS = ["placed", "accepted", "cooking", "ready", "delivered"] as const;
 
@@ -41,12 +41,12 @@ export default function OrderTracker() {
 
   const currentStepIndex = STATUS_STEPS.indexOf(order.status as any);
 
-  const emojis: Record<string, string> = {
-    placed: "📋",
-    accepted: "✅",
-    cooking: "👨‍🍳",
-    ready: "📦",
-    delivered: "🛵",
+  const stepIcons: Record<string, React.ReactNode> = {
+    placed: <ClipboardList className="w-4 h-4 sm:w-5 sm:h-5" />,
+    accepted: <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />,
+    cooking: <Flame className="w-4 h-4 sm:w-5 sm:h-5" />,
+    ready: <PackageCheck className="w-4 h-4 sm:w-5 sm:h-5" />,
+    delivered: <Truck className="w-4 h-4 sm:w-5 sm:h-5" />,
   };
 
   const getStatusMessage = (step: string) => {
@@ -107,9 +107,9 @@ export default function OrderTracker() {
                       boxShadow: isCurrent ? "0 0 20px rgba(230,57,70,0.6)" : "none"
                     }}
                     transition={isCurrent ? { duration: 1.5, repeat: Infinity } : { duration: 0.4 }}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-base sm:text-xl border-4 border-[#111111] shrink-0"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white border-4 border-[#111111] shrink-0"
                   >
-                    {emojis[step]}
+                    {stepIcons[step]}
                   </motion.div>
                   <span className={`text-xs sm:text-sm font-bold capitalize mt-3 text-center ${isPast || isCurrent ? "text-white" : "text-zinc-600"}`}>
                     {step}

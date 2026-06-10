@@ -78,10 +78,10 @@ export default function RestaurantMenu() {
           initial={{ x: fly.x, y: fly.y, scale: 1, opacity: 1 }}
           animate={{ x: fly.destX, y: fly.destY, scale: 0.2, opacity: 0.5 }}
           transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-          className="fixed z-[100] pointer-events-none text-4xl"
+          className="fixed z-[100] pointer-events-none"
           style={{ top: 0, left: 0 }}
         >
-          🍔
+          <div className="w-8 h-8 rounded-full bg-primary/80 shadow-[0_0_12px_rgba(230,57,70,0.6)]" />
         </motion.div>
       ))}
 
@@ -137,7 +137,7 @@ export default function RestaurantMenu() {
                     ? cart.find(c => c.menuItemId === item.id)?.quantity || 0 
                     : 0;
                   
-                  const ingredients: string[] = (item as any).ingredients || ["Secret Sauce", "Spices", "Love"];
+                  const ingredients: string[] = (item as any).ingredients || ["House Recipe", "Fresh Ingredients", "Chef's Selection"];
 
                   return (
                     <motion.div 

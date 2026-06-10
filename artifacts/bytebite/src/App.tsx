@@ -10,8 +10,11 @@ import Layout from "./components/layout";
 import CustomerHome from "./pages/customer/home";
 import RestaurantMenu from "./pages/customer/restaurant-menu";
 import OrderTracker from "./pages/customer/order-tracker";
+import OrderHistory from "./pages/customer/order-history";
 import RestaurantDashboard from "./pages/restaurant/dashboard";
+import RestaurantOnboarding from "./pages/restaurant/onboarding";
 import DriverDashboard from "./pages/driver/dashboard";
+import ProfilePage from "./pages/profile";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import NotFound from "./pages/not-found";
@@ -66,7 +69,10 @@ function AppRouter() {
       <Route path="/" component={CustomerHome} />
       <Route path="/menu/:id" component={RestaurantMenu} />
       <Route path="/track/:id" component={OrderTracker} />
+      <Route path="/orders" component={OrderHistory} />
+      <Route path="/profile" component={ProfilePage} />
       <Route path="/restaurant" component={RestaurantDashboard} />
+      <Route path="/restaurant/add" component={RestaurantOnboarding} />
       <Route path="/driver" component={DriverDashboard} />
       <Route component={NotFound} />
     </Switch>
@@ -75,7 +81,7 @@ function AppRouter() {
 
 export default function App() {
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add("dark");
   }, []);
 
   return (

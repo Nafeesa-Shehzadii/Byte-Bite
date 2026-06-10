@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DollarSign, Utensils, CheckCircle } from "lucide-react";
+import { DollarSign, Utensils, CheckCircle, PlusCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Link } from "wouter";
+import { RevenueChart } from "@/components/dashboard/revenue-chart";
+import { OrderTimeline } from "@/components/dashboard/order-timeline";
 
 export default function RestaurantDashboard() {
   const { data: summary, isLoading: sumLoading } = useGetOrdersSummary();
@@ -87,6 +90,27 @@ export default function RestaurantDashboard() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Charts + Timeline + Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="lg:col-span-2">
+          <RevenueChart orders={(orders || []) as any} />
+        </div>
+        <div className="space-y-4">
+          <OrderTimeline orders={(orders || []) as any} />
+          <Link href="/restaurant/add">
+            <div className="flex items-center gap-3 bg-[#111111] border border-white/10 hover:border-primary/30 rounded-2xl p-4 transition-colors cursor-pointer group">
+              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                <PlusCircle className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white group-hover:text-primary transition-colors">Add Restaurant</p>
+                <p className="text-xs text-zinc-500">Register a new kitchen</p>
+              </div>
+            </div>
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-6">
