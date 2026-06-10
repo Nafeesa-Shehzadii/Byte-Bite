@@ -2,13 +2,16 @@ import { pgTable, serial, text, integer, real, timestamp, jsonb } from "drizzle-
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { restaurantsTable } from "./restaurants";
+import { userTable } from "./auth";
 
 export const ordersTable = pgTable("orders", {
   id: serial("id").primaryKey(),
   customerName: text("customer_name").notNull(),
+  customerId: text("customer_id").references(() => userTable.id),
   restaurantId: integer("restaurant_id").notNull().references(() => restaurantsTable.id),
   restaurantName: text("restaurant_name").notNull(),
   driverName: text("driver_name"),
+  driverId: text("driver_id").references(() => userTable.id),
   status: text("status").notNull().default("placed"),
   total: real("total").notNull(),
   deliveryAddress: text("delivery_address").notNull(),

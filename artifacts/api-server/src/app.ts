@@ -1,6 +1,9 @@
 import express, { type Express } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -25,7 +28,21 @@ app.use(
     },
   }),
 );
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.use(cookieParser());
+
+// better-auth handler — mounted before body parsers so it can read the raw stream
+app.all("/api/auth/*path", async (req, res, next) => {
+  try {
+    await toNodeHandler(auth)(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Stripe webhook needs the raw body for signature verification — must come before express.json()
+app.use("/api/webhooks/stripe", express.raw({ type: "application/json" }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

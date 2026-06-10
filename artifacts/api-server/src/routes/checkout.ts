@@ -3,10 +3,12 @@ import { eq } from "drizzle-orm";
 import { db, ordersTable } from "@workspace/db";
 import { CreateCheckoutSessionBody } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
+import { requireAuth } from "../middlewares/auth";
+import { emitOrderStatusChanged } from "../socket";
 
 const router: IRouter = Router();
 
-router.post("/checkout/session", async (req, res): Promise<void> => {
+router.post("/checkout/session", requireAuth, async (req, res): Promise<void> => {
   const parsed = CreateCheckoutSessionBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
@@ -41,9 +43,9 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
         metadata: { orderId: String(parsed.data.orderId) },
       });
 
-      // Update order with session ID
+      // Mark order as awaiting payment
       await db.update(ordersTable)
-        .set({ stripeSessionId: session.id })
+        .set({ stripeSessionId: session.id, status: "pending_payment" })
         .where(eq(ordersTable.id, parsed.data.orderId));
 
       res.json({ sessionId: session.id, url: session.url ?? "" });
@@ -55,52 +57,20 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
     }
   }
 
-  // Fallback: simulate checkout without Stripe
+  // Fallback: simulate payment — immediately mark as placed
   logger.warn("STRIPE_SECRET_KEY not set — using simulated checkout");
   const fakeSessionId = `sim_${Date.now()}`;
 
   await db.update(ordersTable)
-    .set({ stripeSessionId: fakeSessionId, paymentStatus: "paid" })
+    .set({ stripeSessionId: fakeSessionId, paymentStatus: "paid", status: "placed" })
     .where(eq(ordersTable.id, parsed.data.orderId));
+
+  emitOrderStatusChanged(parsed.data.orderId, "placed");
 
   res.json({
     sessionId: fakeSessionId,
     url: `/?order_id=${parsed.data.orderId}&payment=success`,
   });
-});
-
-// Stripe webhook (noop if not configured)
-router.post("/checkout/webhook", async (req, res): Promise<void> => {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  if (!stripeKey || !webhookSecret) {
-    res.json({ received: true });
-    return;
-  }
-
-  try {
-    const Stripe = (await import("stripe")).default;
-    const stripe = new Stripe(stripeKey);
-    const sig = req.headers["stripe-signature"] as string;
-    const event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as { metadata?: { orderId?: string }; id: string };
-      const orderId = session.metadata?.orderId;
-      if (orderId) {
-        await db.update(ordersTable)
-          .set({ paymentStatus: "paid", stripeSessionId: session.id })
-          .where(eq(ordersTable.id, parseInt(orderId, 10)));
-        logger.info({ orderId }, "Payment confirmed via webhook");
-      }
-    }
-
-    res.json({ received: true });
-  } catch (err) {
-    logger.error({ err }, "Webhook error");
-    res.status(400).json({ error: "Webhook error" });
-  }
 });
 
 export default router;

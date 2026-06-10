@@ -1,29 +1,68 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect } from "react";
 import { initSocket } from "./lib/socket";
+import { useSocketInvalidation } from "./hooks/useSocketInvalidation";
+import { useAuth } from "./hooks/use-auth";
 import Layout from "./components/layout";
 import CustomerHome from "./pages/customer/home";
 import RestaurantMenu from "./pages/customer/restaurant-menu";
 import OrderTracker from "./pages/customer/order-tracker";
 import RestaurantDashboard from "./pages/restaurant/dashboard";
 import DriverDashboard from "./pages/driver/dashboard";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/register";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient();
 
 function SocketProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    initSocket(queryClient);
+    initSocket();
   }, []);
+  useSocketInvalidation();
   return <>{children}</>;
 }
 
-function Router() {
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { user, isLoading, fetchUser } = useAuth();
+  const [location] = useLocation();
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[100dvh] bg-[#0A0A0A] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const publicPaths = ["/login", "/register"];
+  const isPublicPage = publicPaths.includes(location);
+
+  if (!user && !isPublicPage) {
+    return <Redirect to="/login" />;
+  }
+
+  if (user && isPublicPage) {
+    if (user.role === "restaurant") return <Redirect to="/restaurant" />;
+    if (user.role === "driver") return <Redirect to="/driver" />;
+    return <Redirect to="/" />;
+  }
+
+  return <>{children}</>;
+}
+
+function AppRouter() {
   return (
     <Switch>
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <Route path="/" component={CustomerHome} />
       <Route path="/menu/:id" component={RestaurantMenu} />
       <Route path="/track/:id" component={OrderTracker} />
@@ -44,11 +83,23 @@ export default function App() {
       <TooltipProvider>
         <SocketProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Layout>
-              <Router />
-            </Layout>
+            <AuthGuard>
+              <Layout>
+                <AppRouter />
+              </Layout>
+            </AuthGuard>
           </WouterRouter>
-          <Toaster />
+          <Toaster
+            theme="dark"
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: "#111111",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#fafafa",
+              },
+            }}
+          />
         </SocketProvider>
       </TooltipProvider>
     </QueryClientProvider>

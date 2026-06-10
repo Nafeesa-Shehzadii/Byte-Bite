@@ -1,6 +1,7 @@
 import { pgTable, serial, text, integer, real, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
+import { userTable } from "./auth";
 
 export const restaurantsTable = pgTable("restaurants", {
   id: serial("id").primaryKey(),
@@ -10,6 +11,7 @@ export const restaurantsTable = pgTable("restaurants", {
   cuisineType: text("cuisine_type").notNull(),
   deliveryTime: integer("delivery_time").notNull().default(30),
   rating: real("rating").notNull().default(4.5),
+  ownerId: text("owner_id").references(() => userTable.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -1,29 +1,13 @@
-import { io } from "socket.io-client";
-import { QueryClient } from "@tanstack/react-query";
+import { io, type Socket } from "socket.io-client";
 
-let socket: ReturnType<typeof io> | null = null;
+let socket: Socket | null = null;
 
-export const initSocket = (queryClient: QueryClient) => {
+export function initSocket(): Socket {
   if (socket) return socket;
-
   socket = io({ path: "/ws/socket.io" });
-
-  socket.on("order:created", () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/orders/summary"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/orders/available"] });
-  });
-
-  socket.on("order:status_changed", () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/orders/summary"] });
-  });
-
-  socket.on("order:accepted", () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/orders/summary"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/orders/available"] });
-  });
-
   return socket;
-};
+}
+
+export function getSocket(): Socket | null {
+  return socket;
+}

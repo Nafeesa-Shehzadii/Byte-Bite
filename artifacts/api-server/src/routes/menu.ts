@@ -7,6 +7,7 @@ import {
   ListMenuItemsQueryParams,
   ListMenuCategoriesQueryParams,
 } from "@workspace/api-zod";
+import { requireAuth, requireRole } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
@@ -39,6 +40,60 @@ router.get("/restaurants/:id", async (req, res): Promise<void> => {
   const items = await db.select().from(menuItemsTable).where(eq(menuItemsTable.restaurantId, restaurant.id));
 
   res.json({
+    id: restaurant.id,
+    name: restaurant.name,
+    description: restaurant.description,
+    imageUrl: restaurant.imageUrl,
+    cuisineType: restaurant.cuisineType,
+    deliveryTime: restaurant.deliveryTime,
+    rating: restaurant.rating,
+    menuItems: items.map(item => ({
+      id: item.id,
+      restaurantId: item.restaurantId,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      category: item.category,
+      imageUrl: item.imageUrl,
+      available: item.available,
+    })),
+  });
+});
+
+router.post("/restaurants", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const { menuItems, ...body } = req.body;
+
+  if (!body.name || !body.description || !body.cuisineType || !body.imageUrl) {
+    res.status(400).json({ error: "name, description, cuisineType, and imageUrl are required" });
+    return;
+  }
+
+  const [restaurant] = await db.insert(restaurantsTable).values({
+    name: body.name,
+    description: body.description,
+    imageUrl: body.imageUrl,
+    cuisineType: body.cuisineType,
+    deliveryTime: body.deliveryTime ?? 30,
+    rating: body.rating ?? 4.5,
+  }).returning();
+
+  if (Array.isArray(menuItems) && menuItems.length > 0) {
+    await db.insert(menuItemsTable).values(
+      menuItems.map((item: { name: string; description: string; price: number; category: string; imageUrl: string; available?: boolean }) => ({
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        category: item.category,
+        imageUrl: item.imageUrl,
+        available: item.available ?? true,
+        restaurantId: restaurant.id,
+      })),
+    );
+  }
+
+  const items = await db.select().from(menuItemsTable).where(eq(menuItemsTable.restaurantId, restaurant.id));
+
+  res.status(201).json({
     id: restaurant.id,
     name: restaurant.name,
     description: restaurant.description,

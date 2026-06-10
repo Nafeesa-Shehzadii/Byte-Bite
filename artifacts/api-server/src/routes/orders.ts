@@ -11,6 +11,7 @@ import {
 import { emitOrderCreated, emitOrderStatusChanged } from "../socket";
 import { logger } from "../lib/logger";
 import { supabase } from "../lib/supabase";
+import { requireAuth, requireRole } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
@@ -31,7 +32,7 @@ function serializeOrder(order: typeof ordersTable.$inferSelect) {
   };
 }
 
-router.get("/orders/summary", async (_req, res): Promise<void> => {
+router.get("/orders/summary", requireAuth, requireRole("restaurant"), async (_req, res): Promise<void> => {
   const orders = await db.select().from(ordersTable);
   const summary = {
     total: orders.length,
@@ -45,7 +46,7 @@ router.get("/orders/summary", async (_req, res): Promise<void> => {
   res.json(summary);
 });
 
-router.get("/orders", async (req, res): Promise<void> => {
+router.get("/orders", requireAuth, async (req, res): Promise<void> => {
   const params = ListOrdersQueryParams.safeParse(req.query);
   if (!params.success) {
     res.status(400).json({ error: params.error.message });
@@ -61,7 +62,7 @@ router.get("/orders", async (req, res): Promise<void> => {
   res.json(orders.map(serializeOrder));
 });
 
-router.post("/orders", async (req, res): Promise<void> => {
+router.post("/orders", requireAuth, async (req, res): Promise<void> => {
   const parsed = CreateOrderBody.safeParse(req.body);
   if (!parsed.success) {
     req.log.warn({ errors: parsed.error.message }, "Invalid order body");
@@ -70,7 +71,8 @@ router.post("/orders", async (req, res): Promise<void> => {
   }
 
   const [order] = await db.insert(ordersTable).values({
-    customerName: parsed.data.customerName,
+    customerName: req.user!.name,
+    customerId: req.user!.id,
     restaurantId: parsed.data.restaurantId,
     restaurantName: parsed.data.restaurantName,
     total: parsed.data.total,
@@ -106,7 +108,7 @@ router.post("/orders", async (req, res): Promise<void> => {
   res.status(201).json(serializeOrder(order));
 });
 
-router.get("/orders/:id", async (req, res): Promise<void> => {
+router.get("/orders/:id", requireAuth, async (req, res): Promise<void> => {
   const params = GetOrderParams.safeParse(req.params);
   if (!params.success) {
     res.status(400).json({ error: params.error.message });
@@ -125,7 +127,7 @@ router.get("/orders/:id", async (req, res): Promise<void> => {
   res.json(serializeOrder(order));
 });
 
-router.patch("/orders/:id/status", async (req, res): Promise<void> => {
+router.patch("/orders/:id/status", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
   const paramsResult = UpdateOrderStatusParams.safeParse(req.params);
   if (!paramsResult.success) {
     res.status(400).json({ error: paramsResult.error.message });
