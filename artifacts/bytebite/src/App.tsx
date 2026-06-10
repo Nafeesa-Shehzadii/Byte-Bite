@@ -45,14 +45,16 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const publicPaths = ["/login", "/register"];
-  const isPublicPage = publicPaths.includes(location);
+  const publicPaths = ["/login", "/register", "/"];
+  const isPublicPage = publicPaths.includes(location) || location.startsWith("/menu/");
 
   if (!user && !isPublicPage) {
     return <Redirect to="/login" />;
   }
 
-  if (user && isPublicPage) {
+  // Only redirect authenticated users away from auth pages, not all public pages
+  const isAuthPage = location === "/login" || location === "/register";
+  if (user && isAuthPage) {
     if (user.role === "restaurant") return <Redirect to="/restaurant" />;
     if (user.role === "driver") return <Redirect to="/driver" />;
     return <Redirect to="/" />;

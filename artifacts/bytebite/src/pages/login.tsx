@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { AuthBackground } from "@/components/auth/auth-background";
-import { Navigation, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Navigation, Mail, Lock, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+
+const BG = "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=1920&h=1080&fit=crop&q=85";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,82 +26,86 @@ export default function LoginPage() {
       else if (user.role === "driver") setLocation("/driver");
       else setLocation("/");
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      setError(err.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
+  const inputClass = "w-full h-12 pl-10 pr-4 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white placeholder:text-gray-500 outline-none focus:bg-white/[0.1] focus:border-[#E63946]/60 focus:ring-1 focus:ring-[#E63946]/20 text-sm transition-all";
+
   return (
-    <AuthBackground>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto">
+      {/* Background */}
+      <div className="absolute inset-0 z-0">
+        <img src={BG} alt="" className="w-full h-full object-cover scale-105" />
+        <div className="absolute inset-0 bg-[#0C0C0C]/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C] via-transparent to-[#0C0C0C]/40" />
+      </div>
+
+      {/* Glassmorphism modal */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-[#111111]/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl"
+        initial={{ opacity: 0, scale: 0.95, y: 24 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-sm bg-white/[0.05] backdrop-blur-2xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/[0.1]"
       >
+        {/* Logo */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 text-primary mb-3">
-            <Navigation className="w-7 h-7 fill-primary" />
-            <span className="text-2xl font-extrabold tracking-tight">ByteBite</span>
-          </div>
-          <p className="text-zinc-400 text-sm">Sign in to your account</p>
-          <p className="text-zinc-600 text-xs mt-1">Join 1,000+ food lovers</p>
+          <Link href="/" className="inline-flex items-center gap-2.5 text-[#E63946]">
+            <Navigation className="w-8 h-8 fill-[#E63946]" />
+            <span className="text-3xl font-black tracking-tight">ByteBite</span>
+          </Link>
+          <h1 className="text-2xl font-black text-white mt-6">Welcome back</h1>
+          <p className="text-gray-500 text-sm mt-1">Sign in to continue ordering</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl px-4 py-3"
-            >
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="bg-[#E63946]/10 border border-[#E63946]/20 text-[#E63946] text-sm rounded-xl px-4 py-3">
               {error}
             </motion.div>
           )}
 
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="bg-[#0A0A0A]/60 border-white/10 text-white placeholder:text-zinc-500 h-12 rounded-xl focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
-          />
-          <div className="relative">
-            <Input
-              type={showPw ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="bg-[#0A0A0A]/60 border-white/10 text-white placeholder:text-zinc-500 h-12 rounded-xl pr-12 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPw(!showPw)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
-            >
-              {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-400">Email address</label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+                placeholder="you@example.com" className={inputClass} />
+            </div>
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-white hover:bg-[#FF6B6B] font-bold h-12 text-base rounded-xl shadow-[0_0_20px_rgba(230,57,70,0.2)] hover:shadow-[0_0_30px_rgba(230,57,70,0.4)] transition-all"
-          >
-            {loading ? "Signing in..." : "Sign In"}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-400">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required
+                placeholder="Enter your password" className={`${inputClass} !pr-12`} />
+              <button type="button" onClick={() => setShowPw(!showPw)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <Button type="submit" disabled={loading}
+            className="w-full bg-[#E63946] text-white hover:bg-[#d32f3c] font-bold h-12 text-sm rounded-xl shadow-[0_0_30px_rgba(230,57,70,0.25)] hover:shadow-[0_0_40px_rgba(230,57,70,0.35)] transition-all">
+            {loading ? "Signing in..." : <>Sign In <ArrowRight className="w-4 h-4 ml-1.5" /></>}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-zinc-500 mt-6">
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/[0.08]" /></div>
+          <div className="relative flex justify-center"><span className="bg-transparent backdrop-blur-xl px-4 text-xs text-gray-600">or</span></div>
+        </div>
+
+        <p className="text-center text-sm text-gray-500">
           Don't have an account?{" "}
-          <Link href="/register" className="text-primary hover:text-[#FF6B6B] font-medium">
-            Register
-          </Link>
+          <Link href="/register" className="text-[#E63946] font-semibold hover:text-[#FF6B6B] transition-colors">Create one</Link>
         </p>
       </motion.div>
-    </AuthBackground>
+    </div>
   );
 }

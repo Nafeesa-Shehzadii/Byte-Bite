@@ -34,14 +34,14 @@ function StepIndicator({ current }: { current: number }) {
                   boxShadow: active ? "0 0 20px rgba(230,57,70,0.5)" : "none",
                   scale: active ? 1.1 : 1,
                 }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-bold text-gray-900"
               >
                 {done ? <Check className="w-4 h-4" /> : i + 1}
               </motion.div>
-              <span className={`text-[10px] sm:text-xs font-medium ${active ? "text-white" : "text-zinc-600"}`}>{label}</span>
+              <span className={`text-[10px] sm:text-xs font-medium ${active ? "text-gray-900" : "text-gray-400"}`}>{label}</span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`w-8 sm:w-12 h-0.5 rounded-full mb-5 ${i < current ? "bg-[#2EC4B6]" : "bg-zinc-800"}`} />
+              <div className={`w-8 sm:w-12 h-0.5 rounded-full mb-5 ${i < current ? "bg-[#2EC4B6]" : "bg-gray-100"}`} />
             )}
           </div>
         );
@@ -131,40 +131,40 @@ export default function RestaurantOnboarding() {
           {step === 0 && (
             <motion.div key="s0" variants={slideVariants} initial="enter" animate="center" exit="exit" custom={1} className="space-y-5">
               <div className="text-center mb-6">
-                <Store className="w-10 h-10 text-primary mx-auto mb-3" />
-                <h2 className="text-2xl font-extrabold text-white">Restaurant Details</h2>
-                <p className="text-zinc-500 text-sm mt-1">Tell us about your restaurant</p>
+                <Store className="w-10 h-10 text-[#E63946] mx-auto mb-3" />
+                <h2 className="text-2xl font-extrabold text-gray-900">Restaurant Details</h2>
+                <p className="text-gray-400 text-sm mt-1">Tell us about your restaurant</p>
               </div>
-              <Input placeholder="Restaurant Name" value={name} onChange={(e) => setName(e.target.value)} className="bg-[#111111] border-white/10 text-white h-12 rounded-xl" />
+              <Input placeholder="Restaurant Name" value={name} onChange={(e) => setName(e.target.value)} className="bg-white border-gray-100 text-gray-900 h-12 rounded-xl" />
               <textarea
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full bg-[#111111] border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder:text-zinc-500 outline-none focus:border-primary/50 resize-none"
+                className="w-full bg-white border border-gray-100 text-gray-900 rounded-xl px-4 py-3 text-sm placeholder:text-gray-400 outline-none focus:border-primary/50 resize-none"
               />
               <Select value={cuisineType} onValueChange={setCuisineType}>
-                <SelectTrigger className="bg-[#111111] border-white/10 text-zinc-100 h-12 rounded-xl">
+                <SelectTrigger className="bg-white border-gray-100 text-gray-700 h-12 rounded-xl">
                   <SelectValue placeholder="Cuisine Type" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#111111] border-white/10 text-zinc-100">
+                <SelectContent className="bg-white border-gray-100 text-gray-700">
                   {CUISINES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                 </SelectContent>
               </Select>
-              <Input placeholder="Image URL (cover photo)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="bg-[#111111] border-white/10 text-white h-12 rounded-xl" />
+              <Input placeholder="Image URL (cover photo)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="bg-white border-gray-100 text-gray-900 h-12 rounded-xl" />
               {imageUrl && (
-                <div className="rounded-2xl overflow-hidden border border-white/10 aspect-video bg-[#0A0A0A]">
+                <div className="rounded-2xl overflow-hidden border border-gray-100 aspect-video bg-[#FAFAF8]">
                   <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs text-zinc-500 font-medium flex items-center gap-1"><Clock className="w-3 h-3" /> Delivery (min)</label>
-                  <Input type="number" value={deliveryTime} onChange={(e) => setDeliveryTime(e.target.value)} min={10} max={90} className="bg-[#111111] border-white/10 text-white h-10 rounded-xl" />
+                  <label className="text-xs text-gray-400 font-medium flex items-center gap-1"><Clock className="w-3 h-3" /> Delivery (min)</label>
+                  <Input type="number" value={deliveryTime} onChange={(e) => setDeliveryTime(e.target.value)} min={10} max={90} className="bg-white border-gray-100 text-gray-900 h-10 rounded-xl" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs text-zinc-500 font-medium flex items-center gap-1"><Star className="w-3 h-3" /> Rating</label>
-                  <Input type="number" value={rating} onChange={(e) => setRating(e.target.value)} min={1} max={5} step={0.1} className="bg-[#111111] border-white/10 text-white h-10 rounded-xl" />
+                  <label className="text-xs text-gray-400 font-medium flex items-center gap-1"><Star className="w-3 h-3" /> Rating</label>
+                  <Input type="number" value={rating} onChange={(e) => setRating(e.target.value)} min={1} max={5} step={0.1} className="bg-white border-gray-100 text-gray-900 h-10 rounded-xl" />
                 </div>
               </div>
             </motion.div>
@@ -173,28 +173,28 @@ export default function RestaurantOnboarding() {
           {step === 1 && (
             <motion.div key="s1" variants={slideVariants} initial="enter" animate="center" exit="exit" custom={1} className="space-y-5">
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-extrabold text-white">Menu Items</h2>
-                <p className="text-zinc-500 text-sm mt-1">Add at least one item</p>
+                <h2 className="text-2xl font-extrabold text-gray-900">Menu Items</h2>
+                <p className="text-gray-400 text-sm mt-1">Add at least one item</p>
               </div>
               {items.map((item, i) => (
-                <div key={i} className="bg-[#111111] border border-white/10 rounded-2xl p-4 space-y-3 relative">
+                <div key={i} className="bg-white border border-gray-100 rounded-2xl p-4 space-y-3 relative">
                   {items.length > 1 && (
-                    <button onClick={() => removeItem(i)} className="absolute top-3 right-3 text-zinc-600 hover:text-red-400 transition-colors">
+                    <button onClick={() => removeItem(i)} className="absolute top-3 right-3 text-gray-400 hover:text-red-400 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
                   <div className="grid grid-cols-2 gap-3">
-                    <Input placeholder="Item Name" value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} className="bg-[#0A0A0A] border-white/10 text-white h-10 rounded-lg text-sm" />
-                    <Input placeholder="Price (e.g. 12.99)" type="number" step="0.01" value={item.price} onChange={(e) => updateItem(i, "price", e.target.value)} className="bg-[#0A0A0A] border-white/10 text-white h-10 rounded-lg text-sm" />
+                    <Input placeholder="Item Name" value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} className="bg-[#FAFAF8] border-gray-100 text-gray-900 h-10 rounded-lg text-sm" />
+                    <Input placeholder="Price (e.g. 12.99)" type="number" step="0.01" value={item.price} onChange={(e) => updateItem(i, "price", e.target.value)} className="bg-[#FAFAF8] border-gray-100 text-gray-900 h-10 rounded-lg text-sm" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <Input placeholder="Category (e.g. Mains)" value={item.category} onChange={(e) => updateItem(i, "category", e.target.value)} className="bg-[#0A0A0A] border-white/10 text-white h-10 rounded-lg text-sm" />
-                    <Input placeholder="Image URL (optional)" value={item.imageUrl} onChange={(e) => updateItem(i, "imageUrl", e.target.value)} className="bg-[#0A0A0A] border-white/10 text-white h-10 rounded-lg text-sm" />
+                    <Input placeholder="Category (e.g. Mains)" value={item.category} onChange={(e) => updateItem(i, "category", e.target.value)} className="bg-[#FAFAF8] border-gray-100 text-gray-900 h-10 rounded-lg text-sm" />
+                    <Input placeholder="Image URL (optional)" value={item.imageUrl} onChange={(e) => updateItem(i, "imageUrl", e.target.value)} className="bg-[#FAFAF8] border-gray-100 text-gray-900 h-10 rounded-lg text-sm" />
                   </div>
-                  <Input placeholder="Description" value={item.description} onChange={(e) => updateItem(i, "description", e.target.value)} className="bg-[#0A0A0A] border-white/10 text-white h-10 rounded-lg text-sm" />
+                  <Input placeholder="Description" value={item.description} onChange={(e) => updateItem(i, "description", e.target.value)} className="bg-[#FAFAF8] border-gray-100 text-gray-900 h-10 rounded-lg text-sm" />
                 </div>
               ))}
-              <button onClick={addItem} className="w-full py-3 border-2 border-dashed border-white/10 rounded-2xl text-zinc-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center gap-2 text-sm font-medium">
+              <button onClick={addItem} className="w-full py-3 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400 hover:text-[#E63946] hover:border-[#E63946]/30 transition-colors flex items-center justify-center gap-2 text-sm font-medium">
                 <Plus className="w-4 h-4" /> Add Another Item
               </button>
             </motion.div>
@@ -204,32 +204,32 @@ export default function RestaurantOnboarding() {
             <motion.div key="s2" variants={slideVariants} initial="enter" animate="center" exit="exit" custom={1} className="space-y-6">
               <div className="text-center mb-6">
                 <Eye className="w-10 h-10 text-[#2EC4B6] mx-auto mb-3" />
-                <h2 className="text-2xl font-extrabold text-white">Preview</h2>
-                <p className="text-zinc-500 text-sm mt-1">Here's how it'll look</p>
+                <h2 className="text-2xl font-extrabold text-gray-900">Preview</h2>
+                <p className="text-gray-400 text-sm mt-1">Here's how it'll look</p>
               </div>
-              <div className="bg-[#111111] border border-white/10 rounded-2xl overflow-hidden">
+              <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
                 {imageUrl && <img src={imageUrl} alt={name} className="w-full aspect-video object-cover opacity-80" />}
                 <div className="p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold text-white">{name}</h3>
-                    <span className="flex items-center gap-1 text-primary text-sm font-bold"><Star className="w-4 h-4 fill-primary" /> {rating}</span>
+                    <h3 className="text-xl font-bold text-gray-900">{name}</h3>
+                    <span className="flex items-center gap-1 text-[#E63946] text-sm font-bold"><Star className="w-4 h-4 fill-primary" /> {rating}</span>
                   </div>
-                  <p className="text-sm text-zinc-400">{description}</p>
-                  <div className="flex gap-3 text-xs text-zinc-500">
+                  <p className="text-sm text-gray-500">{description}</p>
+                  <div className="flex gap-3 text-xs text-gray-400">
                     <span>{cuisineType}</span>
                     <span>{deliveryTime} min delivery</span>
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
-                <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Menu ({items.filter((it) => it.name).length} items)</h4>
+                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Menu ({items.filter((it) => it.name).length} items)</h4>
                 {items.filter((it) => it.name).map((it, i) => (
-                  <div key={i} className="flex justify-between items-center bg-[#0A0A0A] border border-white/5 rounded-xl px-4 py-3">
+                  <div key={i} className="flex justify-between items-center bg-[#FAFAF8] border border-gray-100 rounded-xl px-4 py-3">
                     <div>
-                      <p className="text-sm font-medium text-white">{it.name}</p>
-                      <p className="text-xs text-zinc-500">{it.category}</p>
+                      <p className="text-sm font-medium text-gray-900">{it.name}</p>
+                      <p className="text-xs text-gray-400">{it.category}</p>
                     </div>
-                    <span className="text-sm font-mono text-primary">${Number(it.price).toFixed(2)}</span>
+                    <span className="text-sm font-mono text-[#E63946]">${Number(it.price).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -243,17 +243,17 @@ export default function RestaurantOnboarding() {
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", duration: 0.6 }}
               >
-                <Rocket className="w-16 h-16 text-primary mx-auto" />
+                <Rocket className="w-16 h-16 text-[#E63946] mx-auto" />
               </motion.div>
-              <h2 className="text-3xl font-extrabold text-white">Ready to Launch!</h2>
-              <p className="text-zinc-400 max-w-sm mx-auto">
-                Your restaurant <span className="text-white font-bold">{name}</span> with {items.filter((it) => it.name).length} menu items is ready to go live.
+              <h2 className="text-3xl font-extrabold text-gray-900">Ready to Launch!</h2>
+              <p className="text-gray-500 max-w-sm mx-auto">
+                Your restaurant <span className="text-gray-900 font-bold">{name}</span> with {items.filter((it) => it.name).length} menu items is ready to go live.
               </p>
               <Button
                 size="lg"
                 disabled={submitting}
                 onClick={handleSubmit}
-                className="bg-primary text-white hover:bg-[#FF6B6B] font-bold text-lg px-10 h-14 rounded-xl shadow-[0_0_30px_rgba(230,57,70,0.3)]"
+                className="bg-[#E63946] text-gray-900 hover:bg-[#d32f3c] font-bold text-lg px-10 h-14 rounded-xl shadow-[0_0_30px_rgba(230,57,70,0.3)]"
               >
                 {submitting ? "Creating..." : "Launch Restaurant"}
               </Button>
@@ -267,7 +267,7 @@ export default function RestaurantOnboarding() {
             variant="outline"
             onClick={() => setStep(Math.max(0, step - 1))}
             disabled={step === 0}
-            className="border-white/10 text-zinc-400 hover:text-white"
+            className="border-gray-100 text-gray-500 hover:text-gray-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Button>
@@ -275,7 +275,7 @@ export default function RestaurantOnboarding() {
             <Button
               onClick={() => setStep(step + 1)}
               disabled={!canAdvance()}
-              className="bg-primary text-white hover:bg-[#FF6B6B] font-bold"
+              className="bg-[#E63946] text-gray-900 hover:bg-[#d32f3c] font-bold"
             >
               Next <ArrowRight className="w-4 h-4 ml-2" />
             </Button>

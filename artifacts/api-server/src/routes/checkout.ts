@@ -22,23 +22,24 @@ router.post("/checkout/session", requireAuth, async (req, res): Promise<void> =>
       const Stripe = (await import("stripe")).default;
       const stripe = new Stripe(stripeKey);
 
+      // Prices come from the DB as dollars (e.g. 12.99). Stripe expects cents.
       const lineItems = parsed.data.items.map(item => ({
         price_data: {
           currency: "usd",
           product_data: { name: item.name },
-          unit_amount: Math.round(item.price * 100),
+          unit_amount: Math.round(Number(item.price) * 100),
         },
         quantity: item.quantity,
       }));
 
       const domains = process.env.REPLIT_DOMAINS?.split(",")[0];
-      const baseUrl = domains ? `https://${domains}` : "http://localhost:80";
+      const baseUrl = domains ? `https://${domains}` : (process.env.FRONTEND_URL || "http://localhost:5173");
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
         mode: "payment",
-        success_url: `${baseUrl}/?order_id=${parsed.data.orderId}&payment=success`,
+        success_url: `${baseUrl}/track/${parsed.data.orderId}?payment=success`,
         cancel_url: `${baseUrl}/?payment=cancelled`,
         metadata: { orderId: String(parsed.data.orderId) },
       });
@@ -71,6 +72,54 @@ router.post("/checkout/session", requireAuth, async (req, res): Promise<void> =>
     sessionId: fakeSessionId,
     url: `/?order_id=${parsed.data.orderId}&payment=success`,
   });
+});
+
+// Confirm payment after Stripe redirect (works without webhook)
+router.post("/checkout/confirm", requireAuth, async (req, res): Promise<void> => {
+  const { orderId } = req.body;
+  if (!orderId) {
+    res.status(400).json({ error: "orderId required" });
+    return;
+  }
+
+  const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, orderId));
+  if (!order || !order.stripeSessionId) {
+    res.status(404).json({ error: "Order not found" });
+    return;
+  }
+
+  // Already confirmed
+  if (order.paymentStatus === "paid") {
+    res.json({ status: "already_paid" });
+    return;
+  }
+
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey || order.stripeSessionId.startsWith("sim_")) {
+    res.json({ status: "simulated" });
+    return;
+  }
+
+  try {
+    const Stripe = (await import("stripe")).default;
+    const stripe = new Stripe(stripeKey);
+    const session = await stripe.checkout.sessions.retrieve(order.stripeSessionId);
+
+    if (session.payment_status === "paid") {
+      await db.update(ordersTable)
+        .set({ paymentStatus: "paid", status: "placed" })
+        .where(eq(ordersTable.id, orderId));
+
+      emitOrderStatusChanged(orderId, "placed");
+      logger.info({ orderId }, "Payment confirmed via session check");
+      res.json({ status: "paid" });
+    } else {
+      res.json({ status: session.payment_status });
+    }
+  } catch (err) {
+    logger.error({ err }, "Failed to verify Stripe session");
+    res.status(500).json({ error: "Verification failed" });
+  }
 });
 
 export default router;

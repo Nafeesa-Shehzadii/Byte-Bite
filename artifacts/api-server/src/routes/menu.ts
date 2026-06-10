@@ -11,6 +11,20 @@ import { requireAuth, requireRole } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
+// Get restaurants owned by the current user
+router.get("/restaurants/mine", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const owned = await db.select().from(restaurantsTable).where(eq(restaurantsTable.ownerId, req.user!.id));
+  res.json(owned.map(r => ({
+    id: r.id,
+    name: r.name,
+    description: r.description,
+    imageUrl: r.imageUrl,
+    cuisineType: r.cuisineType,
+    deliveryTime: r.deliveryTime,
+    rating: r.rating,
+  })));
+});
+
 router.get("/restaurants", async (_req, res): Promise<void> => {
   const restaurants = await db.select().from(restaurantsTable).orderBy(restaurantsTable.id);
   res.json(ListRestaurantsResponse.parse(restaurants.map(r => ({
@@ -75,6 +89,7 @@ router.post("/restaurants", requireAuth, requireRole("restaurant"), async (req, 
     cuisineType: body.cuisineType,
     deliveryTime: body.deliveryTime ?? 30,
     rating: body.rating ?? 4.5,
+    ownerId: req.user!.id,
   }).returning();
 
   if (Array.isArray(menuItems) && menuItems.length > 0) {

@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
-import { eq, sql } from "drizzle-orm";
-import { db, ordersTable } from "@workspace/db";
+import { eq, sql, inArray } from "drizzle-orm";
+import { db, ordersTable, restaurantsTable } from "@workspace/db";
 import {
   ListOrdersQueryParams,
   CreateOrderBody,
@@ -32,8 +32,20 @@ function serializeOrder(order: typeof ordersTable.$inferSelect) {
   };
 }
 
-router.get("/orders/summary", requireAuth, requireRole("restaurant"), async (_req, res): Promise<void> => {
-  const orders = await db.select().from(ordersTable);
+// Helper: get restaurant IDs owned by the current user
+async function getOwnerRestaurantIds(userId: string): Promise<number[]> {
+  const rows = await db.select({ id: restaurantsTable.id }).from(restaurantsTable).where(eq(restaurantsTable.ownerId, userId));
+  return rows.map((r) => r.id);
+}
+
+router.get("/orders/summary", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const restaurantIds = await getOwnerRestaurantIds(req.user!.id);
+  if (restaurantIds.length === 0) {
+    res.json({ total: 0, placed: 0, accepted: 0, cooking: 0, ready: 0, delivered: 0, revenue: 0 });
+    return;
+  }
+
+  const orders = await db.select().from(ordersTable).where(inArray(ordersTable.restaurantId, restaurantIds));
   const summary = {
     total: orders.length,
     placed: orders.filter(o => o.status === "placed").length,
@@ -54,6 +66,14 @@ router.get("/orders", requireAuth, async (req, res): Promise<void> => {
   }
 
   let query = db.select().from(ordersTable).$dynamic();
+
+  // Restaurant owners only see orders for their restaurants
+  if (req.user!.role === "restaurant") {
+    const restaurantIds = await getOwnerRestaurantIds(req.user!.id);
+    if (restaurantIds.length === 0) { res.json([]); return; }
+    query = query.where(inArray(ordersTable.restaurantId, restaurantIds));
+  }
+
   if (params.data.status) {
     query = query.where(eq(ordersTable.status, params.data.status));
   }
@@ -142,6 +162,14 @@ router.patch("/orders/:id/status", requireAuth, requireRole("restaurant"), async
 
   const raw = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const id = parseInt(raw, 10);
+
+  // Verify this order belongs to a restaurant owned by this user
+  const restaurantIds = await getOwnerRestaurantIds(req.user!.id);
+  const [existing] = await db.select({ restaurantId: ordersTable.restaurantId }).from(ordersTable).where(eq(ordersTable.id, id));
+  if (!existing || (restaurantIds.length > 0 && !restaurantIds.includes(existing.restaurantId))) {
+    res.status(403).json({ error: "Not authorized to update this order" });
+    return;
+  }
 
   const [order] = await db.update(ordersTable)
     .set({ status: bodyResult.data.status })
