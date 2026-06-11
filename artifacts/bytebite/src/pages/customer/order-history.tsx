@@ -16,7 +16,7 @@ const STATUS_COLORS: Record<string, string> = {
   ready: "bg-teal-500/10 text-teal-400 border-teal-500/20",
   delivered: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   assigned: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  pending_payment: "bg-white/[0.04] text-gray-500 border-white/[0.1]",
+  pending_payment: "bg-[#141414] text-gray-500 border-white/[0.1]",
 };
 
 export default function OrderHistory() {
@@ -43,9 +43,9 @@ export default function OrderHistory() {
       <PageTransition>
         <div className="bg-[#0C0C0C] min-h-screen">
           <div className="container mx-auto px-4 max-w-3xl py-8 space-y-6">
-            <Skeleton className="h-10 w-48 bg-white/[0.06] rounded-xl" />
-            <Skeleton className="h-14 w-full bg-white/[0.06] rounded-full" />
-            {[1, 2, 3].map((i) => <Skeleton key={i} className="h-36 w-full bg-white/[0.06] rounded-2xl" />)}
+            <Skeleton className="h-10 w-48 bg-[#161616] rounded-xl" />
+            <Skeleton className="h-14 w-full bg-[#161616] rounded-full" />
+            {[1, 2, 3].map((i) => <Skeleton key={i} className="h-36 w-full bg-[#161616] rounded-2xl" />)}
           </div>
         </div>
       </PageTransition>
@@ -70,7 +70,7 @@ export default function OrderHistory() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by restaurant..."
-                className="w-full h-12 pl-11 pr-4 rounded-full bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] text-white placeholder:text-gray-500 outline-none focus:border-[#E63946]/40 focus:ring-2 focus:ring-[#E63946]/10 text-sm"
+                className="w-full h-12 pl-11 pr-4 rounded-full bg-[#141414] border border-white/[0.1] text-white placeholder:text-gray-500 outline-none focus:border-[#E63946]/40 focus:ring-2 focus:ring-[#E63946]/10 text-sm"
               />
             </div>
             <div className="flex gap-2">
@@ -79,7 +79,7 @@ export default function OrderHistory() {
                   key={f}
                   onClick={() => setFilter(f)}
                   className={`px-5 py-2.5 rounded-full text-sm font-medium capitalize transition-all ${
-                    filter === f ? "bg-[#E63946] text-white shadow-none" : "bg-white/[0.04] backdrop-blur-xl text-gray-500 border border-white/[0.1] hover:text-gray-600"
+                    filter === f ? "bg-[#E63946] text-white shadow-none" : "bg-[#141414] text-gray-500 border border-white/[0.1] hover:text-gray-600"
                   }`}
                 >
                   {f}
@@ -99,7 +99,7 @@ export default function OrderHistory() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ delay: i * 0.04 }}
-                    className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-[#E63946]/20 rounded-2xl p-5 sm:p-6 transition-colors shadow-none"
+                    className="bg-[#141414] border border-white/[0.08] hover:border-[#E63946]/20 rounded-2xl p-5 sm:p-6 transition-colors shadow-none"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-2">
@@ -124,7 +124,7 @@ export default function OrderHistory() {
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {order.items.slice(0, 3).map((item, idx) => (
-                            <span key={idx} className="text-xs bg-white/[0.04] text-gray-500 px-2 py-0.5 rounded-full border border-white/[0.08]">{item.name}</span>
+                            <span key={idx} className="text-xs bg-[#141414] text-gray-500 px-2 py-0.5 rounded-full border border-white/[0.08]">{item.name}</span>
                           ))}
                           {order.items.length > 3 && <span className="text-xs text-gray-500">+{order.items.length - 3} more</span>}
                         </div>
@@ -151,7 +151,7 @@ export default function OrderHistory() {
             </AnimatePresence>
 
             {filtered.length === 0 && (
-              <div className="text-center py-20 border border-dashed border-white/[0.1] rounded-2xl bg-white/[0.04] backdrop-blur-xl">
+              <div className="text-center py-20 border border-dashed border-white/[0.1] rounded-2xl bg-[#141414]">
                 <ClipboardList className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                 <p className="text-lg font-bold text-gray-500">No orders yet</p>
                 <p className="text-gray-500 text-sm mt-1 mb-5">Your order history will appear here.</p>

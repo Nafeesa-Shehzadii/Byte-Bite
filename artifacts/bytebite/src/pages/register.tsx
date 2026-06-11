@@ -56,14 +56,14 @@ export default function RegisterPage() {
     }
   };
 
-  const inputClass = "w-full h-12 pl-10 pr-4 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white placeholder:text-gray-500 outline-none focus:bg-white/[0.1] focus:border-[#E63946]/60 focus:ring-1 focus:ring-[#E63946]/20 text-sm transition-all";
+  const inputClass = "w-full h-12 pl-10 pr-4 rounded-xl bg-[#161616] border border-white/[0.1] text-white placeholder:text-gray-500 outline-none focus:bg-white/[0.1] focus:border-[#E63946]/60 focus:ring-1 focus:ring-[#E63946]/20 text-sm transition-all";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto py-8">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <img src={BG} alt="" className="w-full h-full object-cover scale-105" />
-        <div className="absolute inset-0 bg-[#0C0C0C]/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-[#0C0C0C]/70 " />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C] via-transparent to-[#0C0C0C]/40" />
       </div>
 
@@ -72,7 +72,7 @@ export default function RegisterPage() {
         initial={{ opacity: 0, scale: 0.95, y: 24 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-sm bg-white/[0.05] backdrop-blur-2xl rounded-3xl shadow-2xl p-7 sm:p-9 border border-white/[0.1] my-auto"
+        className="relative z-10 w-full max-w-sm bg-[#151515] rounded-3xl shadow-2xl p-7 sm:p-9 border border-white/[0.1] my-auto"
       >
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center gap-2.5 text-[#E63946]">
@@ -131,7 +131,7 @@ export default function RegisterPage() {
                     className={`relative flex flex-col items-center gap-1.5 py-3.5 px-1 rounded-xl border text-center transition-all ${
                       active
                         ? "border-[#E63946]/60 bg-[#E63946]/10 text-[#E63946]"
-                        : "border-white/[0.08] bg-white/[0.04] text-gray-500 hover:border-white/[0.15] hover:text-gray-300"
+                        : "border-white/[0.08] bg-[#141414] text-gray-500 hover:border-white/[0.15] hover:text-gray-300"
                     }`}>
                     {active && <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#E63946] rounded-full flex items-center justify-center"><Check className="w-2.5 h-2.5 text-white" /></div>}
                     <r.icon className="w-5 h-5" />
@@ -151,7 +151,7 @@ export default function RegisterPage() {
 
         <div className="relative my-5">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/[0.08]" /></div>
-          <div className="relative flex justify-center"><span className="bg-transparent backdrop-blur-xl px-4 text-xs text-gray-600">or</span></div>
+          <div className="relative flex justify-center"><span className="bg-transparent  px-4 text-xs text-gray-600">or</span></div>
         </div>
 
         <p className="text-center text-sm text-gray-500">

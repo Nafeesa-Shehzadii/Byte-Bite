@@ -29,7 +29,7 @@ export function SearchBar({ restaurants, onSearch }: { restaurants: Restaurant[]
 
   return (
     <div className="relative w-full max-w-xl mx-auto">
-      <div className={`flex items-center gap-3 bg-[#111111]/80 backdrop-blur-xl border rounded-2xl px-5 h-14 transition-all duration-300 ${
+      <div className={`flex items-center gap-3 bg-[#111111]/80  border rounded-2xl px-5 h-14 transition-all duration-300 ${
         focused ? "border-primary/50 shadow-[0_0_30px_rgba(230,57,70,0.1)]" : "border-white/10"
       }`}>
         <Search className="w-5 h-5 text-zinc-500 shrink-0" />

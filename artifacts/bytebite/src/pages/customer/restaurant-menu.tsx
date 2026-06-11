@@ -8,7 +8,7 @@ import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
 import { useAppStore } from "@/hooks/use-store";
 import { useState, useEffect } from "react";
 
-const glass = "bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]";
+const glass = "bg-[#141414] border border-white/[0.08]";
 
 export default function RestaurantMenu() {
   const { id } = useParams();
@@ -28,12 +28,12 @@ export default function RestaurantMenu() {
     return (
       <div className="bg-[#0C0C0C] min-h-screen -mt-16 pt-24">
         <div className="max-w-6xl mx-auto px-4 space-y-8">
-          <Skeleton className="h-[60vh] w-full bg-white/[0.04] rounded-3xl" />
+          <Skeleton className="h-[60vh] w-full bg-[#141414] rounded-3xl" />
           <div className="flex gap-3">
-            {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10 w-24 bg-white/[0.04] rounded-full" />)}
+            {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10 w-24 bg-[#141414] rounded-full" />)}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            {[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-28 bg-white/[0.04] rounded-2xl" />)}
+            {[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-28 bg-[#141414] rounded-2xl" />)}
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default function RestaurantMenu() {
                 <div key={category} id={`cat-${category}`} className="scroll-mt-32">
                   <div className="flex items-center gap-3 mb-6">
                     <h2 className="text-xl font-bold text-white">{category}</h2>
-                    <span className="text-xs text-gray-600 font-medium bg-white/[0.06] px-2.5 py-1 rounded-full">{items.length}</span>
+                    <span className="text-xs text-gray-600 font-medium bg-[#161616] px-2.5 py-1 rounded-full">{items.length}</span>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {items.map((item, idx) => {
@@ -130,9 +130,9 @@ export default function RestaurantMenu() {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: idx * 0.04 }}
-                          className={`flex gap-4 sm:gap-5 p-4 ${glass} hover:bg-white/[0.07] hover:border-white/[0.14] rounded-2xl transition-all group`}>
+                          className={`flex gap-4 sm:gap-5 p-4 ${glass} hover:bg-[#181818] hover:border-white/[0.14] rounded-2xl transition-all group`}>
                           {/* Circular food image */}
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shrink-0 border-2 border-white/[0.06] group-hover:border-[#E63946]/30 transition-colors bg-white/[0.02] self-center">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shrink-0 border-2 border-white/[0.06] group-hover:border-[#E63946]/30 transition-colors bg-[#111111] self-center">
                             <img src={item.imageUrl || restaurant.imageUrl} alt={item.name}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                           </div>
@@ -147,7 +147,7 @@ export default function RestaurantMenu() {
                             </div>
                             <div className="mt-3">
                               {!item.available ? (
-                                <span className="text-xs text-gray-600 font-medium bg-white/[0.06] px-3 py-1 rounded-full">Sold out</span>
+                                <span className="text-xs text-gray-600 font-medium bg-[#161616] px-3 py-1 rounded-full">Sold out</span>
                               ) : q === 0 ? (
                                 <Button size="sm"
                                   className="h-8 px-4 text-xs font-bold bg-[#E63946]/10 text-[#E63946] hover:bg-[#E63946] hover:text-white border border-[#E63946]/20 hover:border-[#E63946] rounded-lg transition-all"

@@ -30,7 +30,7 @@ export default function ProfilePage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 text-center shadow-none relative overflow-hidden"
+            className="bg-[#141414] border border-white/[0.08] rounded-3xl p-8 text-center shadow-none relative overflow-hidden"
           >
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-[#E63946]/5 rounded-full blur-[80px] pointer-events-none" />
             <div className="relative z-10 space-y-4">
@@ -51,26 +51,26 @@ export default function ProfilePage() {
 
           {/* Stats */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5 text-center shadow-none">
+            <div className="bg-[#141414] border border-white/[0.08] rounded-2xl p-5 text-center shadow-none">
               <p className="text-3xl font-black text-white">{totalOrders}</p>
               <p className="text-xs text-gray-500 mt-1 font-medium">Total Orders</p>
             </div>
-            <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5 text-center shadow-none">
+            <div className="bg-[#141414] border border-white/[0.08] rounded-2xl p-5 text-center shadow-none">
               <p className="text-3xl font-black text-[#E63946]">${(totalSpent).toFixed(0)}</p>
               <p className="text-xs text-gray-500 mt-1 font-medium">Total Spent</p>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-4">
             {user.role === "customer" && (
               <Link href="/orders"><QuickLink icon={<ClipboardList className="w-5 h-5" />} label="My Orders" desc="View order history" /></Link>
             )}
             {user.role === "restaurant" && (
-              <>
-                <Link href="/restaurant"><QuickLink icon={<Store className="w-5 h-5" />} label="Dashboard" desc="Manage your kitchen" /></Link>
-                <Link href="/restaurant/add"><QuickLink icon={<Store className="w-5 h-5" />} label="Add Restaurant" desc="Register a new restaurant" /></Link>
-              </>
+              <Link href="/restaurant"><QuickLink icon={<Store className="w-5 h-5" />} label="Dashboard" desc="Manage your kitchen" /></Link>
+            )}
+            {user.role === "restaurant" && (
+              <Link href="/restaurant/add"><QuickLink icon={<Store className="w-5 h-5" />} label="Add Restaurant" desc="Register a new restaurant" /></Link>
             )}
             {user.role === "driver" && (
               <Link href="/driver"><QuickLink icon={<Truck className="w-5 h-5" />} label="Dashboard" desc="Accept deliveries" /></Link>
@@ -92,7 +92,7 @@ export default function ProfilePage() {
 
 function QuickLink({ icon, label, desc }: { icon: React.ReactNode; label: string; desc: string }) {
   return (
-    <div className="flex items-center gap-4 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] hover:border-[#E63946]/20 rounded-2xl p-4 transition-colors cursor-pointer group shadow-none">
+    <div className="flex items-center gap-4 bg-[#141414] border border-white/[0.08] hover:bg-[#181818] hover:border-[#E63946]/20 rounded-2xl p-5 transition-all cursor-pointer group shadow-none">
       <div className="w-10 h-10 bg-[#E63946]/10 rounded-xl flex items-center justify-center text-[#E63946] shrink-0">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="font-bold text-white text-sm group-hover:text-[#E63946] transition-colors">{label}</p>

@@ -33,11 +33,11 @@ export default function OrderTracker() {
     return (
       <div className="bg-[#0C0C0C] min-h-screen">
         <div className="max-w-4xl mx-auto space-y-6 py-12 px-4">
-          <Skeleton className="h-8 w-48 bg-white/[0.06] rounded-lg" />
-          <Skeleton className="h-64 w-full bg-white/[0.06] rounded-3xl" />
+          <Skeleton className="h-8 w-48 bg-[#161616] rounded-lg" />
+          <Skeleton className="h-64 w-full bg-[#161616] rounded-3xl" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Skeleton className="h-32 bg-white/[0.06] rounded-2xl" />
-            <Skeleton className="h-32 bg-white/[0.06] rounded-2xl" />
+            <Skeleton className="h-32 bg-[#161616] rounded-2xl" />
+            <Skeleton className="h-32 bg-[#161616] rounded-2xl" />
           </div>
         </div>
       </div>
@@ -84,9 +84,9 @@ export default function OrderTracker() {
         </div>
 
         {/* Progress */}
-        <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 sm:p-10 shadow-none relative overflow-hidden">
+        <div className="bg-[#141414] border border-white/[0.08] rounded-3xl p-6 sm:p-10 shadow-none relative overflow-hidden">
           <div className="relative py-6">
-            <div className="absolute top-[calc(50%-14px)] left-6 right-6 sm:left-10 sm:right-10 h-1.5 bg-white/[0.06] rounded-full -translate-y-1/2 z-0" />
+            <div className="absolute top-[calc(50%-14px)] left-6 right-6 sm:left-10 sm:right-10 h-1.5 bg-[#161616] rounded-full -translate-y-1/2 z-0" />
             <div className="absolute top-[calc(50%-14px)] left-6 sm:left-10 h-1.5 bg-[#E63946] rounded-full -translate-y-1/2 z-0 transition-all duration-700"
               style={{ width: `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 90}%` }} />
             <div className="flex justify-between items-center relative z-10">
@@ -119,7 +119,7 @@ export default function OrderTracker() {
 
         {/* Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 space-y-4 shadow-none">
+          <div className="bg-[#141414] border border-white/[0.08] rounded-2xl p-6 space-y-4 shadow-none">
             <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider">Items</h3>
             <div className="space-y-3">
               {order.items.map((item, idx) => (
@@ -134,7 +134,7 @@ export default function OrderTracker() {
               <span className="text-[#E63946] font-mono">${(order.total).toFixed(2)}</span>
             </div>
           </div>
-          <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 space-y-4 shadow-none">
+          <div className="bg-[#141414] border border-white/[0.08] rounded-2xl p-6 space-y-4 shadow-none">
             <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider">Delivery</h3>
             <div className="space-y-3">
               <div><p className="text-xs text-gray-500 mb-1">Customer</p><p className="text-white font-medium">{order.customerName}</p></div>

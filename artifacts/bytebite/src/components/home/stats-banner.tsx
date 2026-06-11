@@ -40,7 +40,7 @@ export function StatsBanner() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.15, duration: 0.5 }}
-          className="bg-[#111111]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-4 sm:p-6 text-center"
+          className="bg-[#111111]/60  border border-white/5 rounded-2xl p-4 sm:p-6 text-center"
         >
           <stat.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color} mx-auto mb-2`} />
           <div className={`text-2xl sm:text-3xl font-black ${stat.color} tracking-tight`}>

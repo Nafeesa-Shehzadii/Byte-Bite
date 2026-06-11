@@ -50,7 +50,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const isActive = (href: string) => (href === "/" ? location === "/" : location.startsWith(href));
+  const isActive = (href: string) => (href === "/" ? location === "/" : location === href);
 
   if (isAuthPage) {
     return <div className="min-h-[100dvh] font-sans">{children}</div>;
@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-[100dvh] flex flex-col font-sans bg-[#0A0A0A] text-zinc-50 selection:bg-primary/30">
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0A0A0A]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0A0A0A]/80 ">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 text-[#E63946] hover:opacity-80 transition-opacity">

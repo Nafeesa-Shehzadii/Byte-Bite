@@ -50,8 +50,8 @@ const TESTIMONIALS = [
 const CUISINES = ["All", "American", "Japanese", "Italian", "Mexican", "Indian", "Chinese", "Thai"];
 
 /* ── Shared glass style ── */
-const glass = "bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]";
-const glassHover = "hover:bg-white/[0.07] hover:border-white/[0.14] hover:shadow-[0_8px_40px_rgba(230,57,70,0.08)]";
+const glass = "bg-[#141414] border border-white/[0.08]";
+const glassHover = "hover:bg-[#181818] hover:border-white/[0.14] hover:shadow-[0_8px_40px_rgba(230,57,70,0.08)]";
 
 /* ────────────────────── COMPONENTS ────────────────────── */
 
@@ -61,7 +61,10 @@ function HeroCarousel() {
   const timer = useRef<ReturnType<typeof setInterval>>(undefined);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused) {
+      clearInterval(timer.current);
+      return;
+    }
     timer.current = setInterval(() => setIdx((i) => (i + 1) % HERO_SLIDES.length), 2500);
     return () => clearInterval(timer.current);
   }, [paused]);
@@ -71,8 +74,6 @@ function HeroCarousel() {
   return (
     <section
       className="relative min-h-[100vh] w-full flex items-center justify-center overflow-hidden -mt-16"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       {/* BG image -- simple opacity crossfade, no scale transform */}
       {HERO_SLIDES.map((s, i) => (
@@ -138,7 +139,7 @@ function HeroCarousel() {
       {/* Slide indicators */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
         {HERO_SLIDES.map((_, i) => (
-          <button key={i} onClick={() => setIdx(i)} className={`h-1.5 rounded-full transition-all duration-500 ${i === idx ? "w-8 bg-[#E63946]" : "w-4 bg-white/20 hover:bg-white/40"}`} />
+          <button key={i} onClick={() => setIdx(i)} className={`h-1.5 rounded-full transition-all duration-500 ${i === idx ? "w-8 bg-[#E63946]" : "w-4 bg-[#141414] hover:bg-white/40"}`} />
         ))}
       </div>
     </section>
@@ -172,7 +173,7 @@ function RestaurantCard({ restaurant, index }: { restaurant: any; index: number 
           <img src={restaurant.imageUrl || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&fit=crop"} alt={restaurant.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C] via-transparent to-transparent" />
-          <div className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/10 text-[#E63946] px-2.5 py-1 rounded-lg text-sm font-bold">
+          <div className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 border border-white/10 text-[#E63946] px-2.5 py-1 rounded-lg text-sm font-bold">
             <Star className="w-3.5 h-3.5 fill-[#E63946]" />{restaurant.rating}
           </div>
           <div className="absolute bottom-4 left-4 right-4">
@@ -298,7 +299,7 @@ export default function CustomerHome() {
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: i * 0.2, ease: "easeOut" }}
                   whileHover={{ y: -8, transition: { duration: 0.25 } }}
-                  className={`${glass} rounded-2xl p-8 text-center transition-all duration-300 group hover:bg-white/[0.07] hover:border-[#E63946]/20 hover:shadow-[0_16px_48px_rgba(230,57,70,0.1)]`}
+                  className={`${glass} rounded-2xl p-8 text-center transition-all duration-300 group hover:bg-[#181818] hover:border-[#E63946]/20 hover:shadow-[0_16px_48px_rgba(230,57,70,0.1)]`}
                 >
                   {/* Step number badge */}
                   <div className="relative mx-auto mb-6">
@@ -345,8 +346,8 @@ export default function CustomerHome() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className={`${glass} rounded-2xl overflow-hidden`}>
-                  <Skeleton className="aspect-[16/10] w-full bg-white/[0.04]" />
-                  <div className="p-5 space-y-3"><Skeleton className="h-5 w-3/4 bg-white/[0.04] rounded" /><Skeleton className="h-4 w-full bg-white/[0.03] rounded" /></div>
+                  <Skeleton className="aspect-[16/10] w-full bg-[#141414]" />
+                  <div className="p-5 space-y-3"><Skeleton className="h-5 w-3/4 bg-[#141414] rounded" /><Skeleton className="h-4 w-full bg-[#131313] rounded" /></div>
                 </div>
               ))}
             </div>
@@ -380,7 +381,7 @@ export default function CustomerHome() {
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ duration: 0.6, delay: i * 0.15, ease: "easeOut" }}
                   whileHover={{ y: -10, transition: { duration: 0.25 } }}
-                  className={`${glass} rounded-2xl p-8 text-center transition-all duration-300 group hover:bg-white/[0.07] hover:border-[#E63946]/20 hover:shadow-[0_20px_50px_rgba(230,57,70,0.08)]`}
+                  className={`${glass} rounded-2xl p-8 text-center transition-all duration-300 group hover:bg-[#181818] hover:border-[#E63946]/20 hover:shadow-[0_20px_50px_rgba(230,57,70,0.08)]`}
                 >
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
@@ -469,7 +470,7 @@ export default function CustomerHome() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 + i * 0.1 }}
-                    className={`flex items-center gap-3 text-sm text-gray-400 ${glass} rounded-xl px-4 py-3 hover:bg-white/[0.06] transition-colors`}
+                    className={`flex items-center gap-3 text-sm text-gray-400 ${glass} rounded-xl px-4 py-3 hover:bg-[#161616] transition-colors`}
                   >
                     <item.icon className="w-4 h-4 text-[#E63946] shrink-0" /> {item.text}
                   </motion.div>
@@ -481,7 +482,7 @@ export default function CustomerHome() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className={`flex flex-col justify-center items-center text-center space-y-6 ${glass} rounded-3xl p-10 hover:bg-white/[0.06] hover:border-[#E63946]/15 transition-all duration-300`}
+              className={`flex flex-col justify-center items-center text-center space-y-6 ${glass} rounded-3xl p-10 hover:bg-[#161616] hover:border-[#E63946]/15 transition-all duration-300`}
             >
               <div className="w-16 h-16 bg-[#E63946]/10 rounded-2xl flex items-center justify-center">
                 <ArrowRight className="w-7 h-7 text-[#E63946]" />
