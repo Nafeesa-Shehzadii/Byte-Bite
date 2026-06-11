@@ -8,6 +8,7 @@
 
 export * from './checkoutSession';
 export * from './checkoutSessionInput';
+export * from './deleteResult';
 export * from './driverAcceptInput';
 export * from './healthStatus';
 export * from './listDriverOrdersParams';
@@ -16,6 +17,8 @@ export * from './listMenuItemsParams';
 export * from './listOrdersParams';
 export * from './listOrdersRole';
 export * from './menuItem';
+export * from './menuItemInput';
+export * from './menuItemUpdate';
 export * from './order';
 export * from './orderInput';
 export * from './orderItem';
@@ -25,4 +28,5 @@ export * from './orderStatusUpdate';
 export * from './orderStatusUpdateStatus';
 export * from './orderSummary';
 export * from './restaurant';
+export * from './restaurantUpdate';
 export * from './restaurantWithMenu';

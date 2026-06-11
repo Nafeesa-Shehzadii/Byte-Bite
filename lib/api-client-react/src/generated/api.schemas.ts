@@ -128,6 +128,37 @@ export interface CheckoutSessionInput {
   items: OrderItem[];
 }
 
+export interface MenuItemInput {
+  restaurantId: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  imageUrl: string;
+  available?: boolean;
+}
+
+export interface MenuItemUpdate {
+  name?: string;
+  description?: string;
+  price?: number;
+  category?: string;
+  imageUrl?: string;
+  available?: boolean;
+}
+
+export interface RestaurantUpdate {
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  cuisineType?: string;
+  deliveryTime?: number;
+}
+
+export interface DeleteResult {
+  success: boolean;
+}
+
 export interface CheckoutSession {
   sessionId: string;
   url: string;

@@ -49,6 +49,21 @@ paths:
                 items:
                   $ref: "#/components/schemas/Restaurant"
 
+  /restaurants/mine:
+    get:
+      operationId: listMyRestaurants
+      tags: [menu]
+      summary: List restaurants owned by current user
+      responses:
+        "200":
+          description: List of owned restaurants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Restaurant"
+
   /restaurants/{id}:
     get:
       operationId: getRestaurant
@@ -67,6 +82,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RestaurantWithMenu"
+        "404":
+          description: Restaurant not found
+    patch:
+      operationId: updateRestaurant
+      tags: [menu]
+      summary: Update a restaurant owned by the current user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantUpdate"
+      responses:
+        "200":
+          description: Updated restaurant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Restaurant"
+        "403":
+          description: Not the owner
+        "404":
+          description: Restaurant not found
+    delete:
+      operationId: deleteRestaurant
+      tags: [menu]
+      summary: Delete a restaurant owned by the current user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Restaurant deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+        "403":
+          description: Not the owner
         "404":
           description: Restaurant not found
 
@@ -93,6 +156,79 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MenuItem"
+
+  /menu/items:
+    post:
+      operationId: createMenuItem
+      tags: [menu]
+      summary: Add a menu item to a restaurant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuItemInput"
+      responses:
+        "201":
+          description: Menu item created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "403":
+          description: Not the restaurant owner
+        "400":
+          description: Invalid request
+
+  /menu/items/{id}:
+    patch:
+      operationId: updateMenuItem
+      tags: [menu]
+      summary: Update a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuItemUpdate"
+      responses:
+        "200":
+          description: Updated menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "403":
+          description: Not the restaurant owner
+        "404":
+          description: Menu item not found
+    delete:
+      operationId: deleteMenuItem
+      tags: [menu]
+      summary: Delete a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Menu item deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+        "403":
+          description: Not the restaurant owner
+        "404":
+          description: Menu item not found
 
   /menu/categories:
     get:
@@ -494,6 +630,62 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrderItem"
+
+    MenuItemInput:
+      type: object
+      required: [restaurantId, name, description, price, category, imageUrl]
+      properties:
+        restaurantId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        imageUrl:
+          type: string
+        available:
+          type: boolean
+
+    MenuItemUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        imageUrl:
+          type: string
+        available:
+          type: boolean
+
+    RestaurantUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        cuisineType:
+          type: string
+        deliveryTime:
+          type: integer
+
+    DeleteResult:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
 
     CheckoutSession:
       type: object

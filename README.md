@@ -54,11 +54,11 @@ Register with "Customer" role. Browse the cinematic home page with auto-play her
 
 ### Restaurant Owner
 
-Register with "Restaurant" role. Add a restaurant via the 4-step onboarding wizard (Info, Menu Items, Preview, Launch). Manage orders on the Kitchen Cockpit dashboard with revenue chart, activity timeline, and order pipeline (Accept, Cook, Ready).
+Register with "Restaurant" role. Add a restaurant via the 4-step onboarding wizard (Info, Menu Items, Preview, Launch). Manage orders on the Kitchen Cockpit dashboard with revenue chart, activity timeline, and order pipeline (Accept, Cook, Ready). Edit restaurant details (name, description, cuisine, image, delivery time) or delete restaurants from the "My Restaurants" section. Manage menu items per restaurant -- add, edit, delete items and toggle visibility.
 
 ### Driver
 
-Register with "Driver" role. View earnings, delivery count, and active stats. Accept available pickups (race-safe with 409 on conflict). Complete deliveries.
+Register with "Driver" role. View earnings, delivery count, and active stats. Accept available pickups (race-safe with 409 on conflict). Mark orders as delivered once picked up.
 
 ---
 
@@ -151,8 +151,11 @@ Register with "Driver" role. View earnings, delivery count, and active stats. Ac
 | Activity timeline | | x | |
 | Order pipeline (Accept, Cook, Ready) | | x | |
 | 4-step restaurant onboarding wizard | | x | |
+| Edit/delete owned restaurants | | x | |
+| Menu item CRUD (add, edit, delete, toggle visibility) | | x | |
 | Earnings and delivery stats | | | x |
 | Race-safe pickup accept (409 on conflict) | | | x |
+| Mark orders as delivered | | | x |
 | Role-aware toast notifications | x | x | x |
 | Session auth with role selection | x | x | x |
 | Profile with stats | x | x | x |
@@ -215,8 +218,9 @@ bytebite/
         customer/restaurant-menu.tsx  Scroll-to-expand menu
         customer/order-tracker.tsx    Live tracking
         customer/order-history.tsx    Past orders
-        restaurant/dashboard.tsx      Kitchen cockpit
+        restaurant/dashboard.tsx      Kitchen cockpit + my restaurants
         restaurant/onboarding.tsx     4-step wizard
+        restaurant/manage-menu.tsx    Menu item CRUD
         driver/dashboard.tsx          Driver terminal
         profile.tsx                   User profile
         login.tsx                     Glassmorphism auth
@@ -315,9 +319,10 @@ export STRIPE_WEBHOOK_SECRET="whsec_..."
 | `/orders` | Customer | Order history with search, filters, reorder |
 | `/track/:id` | Customer | Live 5-step order progress |
 | `/profile` | All | User profile, stats, quick links |
-| `/restaurant` | Restaurant | Kitchen cockpit with chart, timeline, board |
+| `/restaurant` | Restaurant | Kitchen cockpit with chart, timeline, board, my restaurants |
 | `/restaurant/add` | Restaurant | 4-step onboarding wizard |
-| `/driver` | Driver | Stats, assignments, available pickups |
+| `/restaurant/:id/menu` | Restaurant | Menu item management (add, edit, delete, toggle) |
+| `/driver` | Driver | Stats, assignments, available pickups, mark delivered |
 
 ---
 
@@ -347,11 +352,17 @@ export STRIPE_WEBHOOK_SECRET="whsec_..."
 | Method | Endpoint | Role | Description |
 |--------|----------|------|-------------|
 | POST | `/api/restaurants` | restaurant | Create restaurant |
+| PATCH | `/api/restaurants/:id` | restaurant | Update restaurant (owner only) |
+| DELETE | `/api/restaurants/:id` | restaurant | Delete restaurant (owner only) |
+| GET | `/api/restaurants/mine` | restaurant | List owned restaurants |
+| POST | `/api/menu/items` | restaurant | Add menu item |
+| PATCH | `/api/menu/items/:id` | restaurant | Update menu item |
+| DELETE | `/api/menu/items/:id` | restaurant | Delete menu item |
 | GET | `/api/orders` | any | List orders |
 | POST | `/api/orders` | any | Place order |
 | GET | `/api/orders/:id` | any | Order details |
 | GET | `/api/orders/summary` | restaurant | Stats and revenue |
-| PATCH | `/api/orders/:id/status` | restaurant | Update status |
+| PATCH | `/api/orders/:id/status` | restaurant, driver | Update status |
 | GET | `/api/drivers/available` | driver | Ready orders |
 | GET | `/api/drivers/my-orders` | driver | Assigned orders |
 | PATCH | `/api/drivers/:orderId/accept` | driver | Accept (optimistic lock) |

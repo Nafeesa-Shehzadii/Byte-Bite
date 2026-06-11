@@ -33,6 +33,21 @@ export const ListRestaurantsResponse = zod.array(ListRestaurantsResponseItem)
 
 
 /**
+ * @summary List restaurants owned by current user
+ */
+export const ListMyRestaurantsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "imageUrl": zod.string(),
+  "cuisineType": zod.string(),
+  "deliveryTime": zod.number(),
+  "rating": zod.number()
+})
+export const ListMyRestaurantsResponse = zod.array(ListMyRestaurantsResponseItem)
+
+
+/**
  * @summary Get restaurant with menu
  */
 export const GetRestaurantParams = zod.object({
@@ -61,6 +76,44 @@ export const GetRestaurantResponse = zod.object({
 
 
 /**
+ * @summary Update a restaurant owned by the current user
+ */
+export const UpdateRestaurantParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateRestaurantBody = zod.object({
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "imageUrl": zod.string().optional(),
+  "cuisineType": zod.string().optional(),
+  "deliveryTime": zod.number().optional()
+})
+
+export const UpdateRestaurantResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "imageUrl": zod.string(),
+  "cuisineType": zod.string(),
+  "deliveryTime": zod.number(),
+  "rating": zod.number()
+})
+
+
+/**
+ * @summary Delete a restaurant owned by the current user
+ */
+export const DeleteRestaurantParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteRestaurantResponse = zod.object({
+  "success": zod.boolean()
+})
+
+
+/**
  * @summary List all menu items
  */
 export const ListMenuItemsQueryParams = zod.object({
@@ -79,6 +132,60 @@ export const ListMenuItemsResponseItem = zod.object({
   "available": zod.boolean()
 })
 export const ListMenuItemsResponse = zod.array(ListMenuItemsResponseItem)
+
+
+/**
+ * @summary Add a menu item to a restaurant
+ */
+export const CreateMenuItemBody = zod.object({
+  "restaurantId": zod.number(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "price": zod.number(),
+  "category": zod.string(),
+  "imageUrl": zod.string(),
+  "available": zod.boolean().optional()
+})
+
+
+/**
+ * @summary Update a menu item
+ */
+export const UpdateMenuItemParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateMenuItemBody = zod.object({
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "price": zod.number().optional(),
+  "category": zod.string().optional(),
+  "imageUrl": zod.string().optional(),
+  "available": zod.boolean().optional()
+})
+
+export const UpdateMenuItemResponse = zod.object({
+  "id": zod.number(),
+  "restaurantId": zod.number(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "price": zod.number(),
+  "category": zod.string(),
+  "imageUrl": zod.string(),
+  "available": zod.boolean()
+})
+
+
+/**
+ * @summary Delete a menu item
+ */
+export const DeleteMenuItemParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteMenuItemResponse = zod.object({
+  "success": zod.boolean()
+})
 
 
 /**

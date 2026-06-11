@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
-import { eq } from "drizzle-orm";
-import { db, restaurantsTable, menuItemsTable } from "@workspace/db";
+import { eq, and } from "drizzle-orm";
+import { db, restaurantsTable, menuItemsTable, ordersTable } from "@workspace/db";
 import {
   ListRestaurantsResponse,
   GetRestaurantParams,
@@ -129,6 +129,77 @@ router.post("/restaurants", requireAuth, requireRole("restaurant"), async (req, 
   });
 });
 
+// Update a restaurant (owner only)
+router.patch("/restaurants/:id", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid restaurant id" });
+    return;
+  }
+
+  const [restaurant] = await db.select().from(restaurantsTable).where(eq(restaurantsTable.id, id));
+  if (!restaurant) {
+    res.status(404).json({ error: "Restaurant not found" });
+    return;
+  }
+
+  if (restaurant.ownerId !== req.user!.id) {
+    res.status(403).json({ error: "You can only update your own restaurants" });
+    return;
+  }
+
+  const updates: Record<string, any> = {};
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.description) updates.description = req.body.description;
+  if (req.body.imageUrl) updates.imageUrl = req.body.imageUrl;
+  if (req.body.cuisineType) updates.cuisineType = req.body.cuisineType;
+  if (req.body.deliveryTime != null) updates.deliveryTime = req.body.deliveryTime;
+
+  if (Object.keys(updates).length === 0) {
+    res.status(400).json({ error: "No fields to update" });
+    return;
+  }
+
+  const [updated] = await db.update(restaurantsTable).set(updates).where(eq(restaurantsTable.id, id)).returning();
+
+  res.json({
+    id: updated.id,
+    name: updated.name,
+    description: updated.description,
+    imageUrl: updated.imageUrl,
+    cuisineType: updated.cuisineType,
+    deliveryTime: updated.deliveryTime,
+    rating: updated.rating,
+  });
+});
+
+// Delete a restaurant (owner only)
+router.delete("/restaurants/:id", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid restaurant id" });
+    return;
+  }
+
+  const [restaurant] = await db.select().from(restaurantsTable).where(eq(restaurantsTable.id, id));
+  if (!restaurant) {
+    res.status(404).json({ error: "Restaurant not found" });
+    return;
+  }
+
+  if (restaurant.ownerId !== req.user!.id) {
+    res.status(403).json({ error: "You can only delete your own restaurants" });
+    return;
+  }
+
+  // Delete related records in FK order
+  await db.delete(ordersTable).where(eq(ordersTable.restaurantId, id));
+  await db.delete(menuItemsTable).where(eq(menuItemsTable.restaurantId, id));
+  await db.delete(restaurantsTable).where(eq(restaurantsTable.id, id));
+
+  res.json({ success: true });
+});
+
 router.get("/menu", async (req, res): Promise<void> => {
   const params = ListMenuItemsQueryParams.safeParse(req.query);
   if (!params.success) {
@@ -152,6 +223,118 @@ router.get("/menu", async (req, res): Promise<void> => {
     imageUrl: item.imageUrl,
     available: item.available,
   })));
+});
+
+// Create a menu item (owner only)
+router.post("/menu/items", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const { restaurantId, name, description, price, category, imageUrl, available } = req.body;
+
+  if (!restaurantId || !name || !description || price == null || !category || !imageUrl) {
+    res.status(400).json({ error: "restaurantId, name, description, price, category, and imageUrl are required" });
+    return;
+  }
+
+  const [restaurant] = await db.select().from(restaurantsTable).where(eq(restaurantsTable.id, restaurantId));
+  if (!restaurant) {
+    res.status(404).json({ error: "Restaurant not found" });
+    return;
+  }
+  if (restaurant.ownerId !== req.user!.id) {
+    res.status(403).json({ error: "You can only add items to your own restaurants" });
+    return;
+  }
+
+  const [item] = await db.insert(menuItemsTable).values({
+    restaurantId,
+    name,
+    description,
+    price,
+    category,
+    imageUrl,
+    available: available ?? true,
+  }).returning();
+
+  res.status(201).json({
+    id: item.id,
+    restaurantId: item.restaurantId,
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    category: item.category,
+    imageUrl: item.imageUrl,
+    available: item.available,
+  });
+});
+
+// Update a menu item (owner only)
+router.patch("/menu/items/:id", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid menu item id" });
+    return;
+  }
+
+  const [item] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, id));
+  if (!item) {
+    res.status(404).json({ error: "Menu item not found" });
+    return;
+  }
+
+  const [restaurant] = await db.select().from(restaurantsTable).where(eq(restaurantsTable.id, item.restaurantId));
+  if (!restaurant || restaurant.ownerId !== req.user!.id) {
+    res.status(403).json({ error: "You can only update items in your own restaurants" });
+    return;
+  }
+
+  const updates: Record<string, any> = {};
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.description) updates.description = req.body.description;
+  if (req.body.price != null) updates.price = req.body.price;
+  if (req.body.category) updates.category = req.body.category;
+  if (req.body.imageUrl) updates.imageUrl = req.body.imageUrl;
+  if (req.body.available != null) updates.available = req.body.available;
+
+  if (Object.keys(updates).length === 0) {
+    res.status(400).json({ error: "No fields to update" });
+    return;
+  }
+
+  const [updated] = await db.update(menuItemsTable).set(updates).where(eq(menuItemsTable.id, id)).returning();
+
+  res.json({
+    id: updated.id,
+    restaurantId: updated.restaurantId,
+    name: updated.name,
+    description: updated.description,
+    price: updated.price,
+    category: updated.category,
+    imageUrl: updated.imageUrl,
+    available: updated.available,
+  });
+});
+
+// Delete a menu item (owner only)
+router.delete("/menu/items/:id", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid menu item id" });
+    return;
+  }
+
+  const [item] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, id));
+  if (!item) {
+    res.status(404).json({ error: "Menu item not found" });
+    return;
+  }
+
+  const [restaurant] = await db.select().from(restaurantsTable).where(eq(restaurantsTable.id, item.restaurantId));
+  if (!restaurant || restaurant.ownerId !== req.user!.id) {
+    res.status(403).json({ error: "You can only delete items in your own restaurants" });
+    return;
+  }
+
+  await db.delete(menuItemsTable).where(eq(menuItemsTable.id, id));
+  res.json({ success: true });
 });
 
 router.get("/menu/categories", async (req, res): Promise<void> => {

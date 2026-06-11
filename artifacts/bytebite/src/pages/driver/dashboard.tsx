@@ -70,15 +70,15 @@ export default function DriverDashboard() {
     return (
       <div className="container mx-auto px-4 space-y-6 max-w-4xl py-6">
         <div className="flex items-center gap-4">
-          <Skeleton className="w-16 h-16 bg-white rounded-2xl border border-gray-100" />
+          <Skeleton className="w-16 h-16 bg-[#161616] rounded-2xl border border-white/[0.08]" />
           <div className="space-y-2">
-            <Skeleton className="h-8 w-48 bg-white rounded-lg" />
-            <Skeleton className="h-4 w-32 bg-white rounded" />
+            <Skeleton className="h-8 w-48 bg-[#161616] rounded-lg" />
+            <Skeleton className="h-4 w-32 bg-[#161616] rounded" />
           </div>
         </div>
-        <Skeleton className="h-6 w-40 bg-white rounded-lg" />
+        <Skeleton className="h-6 w-40 bg-[#161616] rounded-lg" />
         {[1, 2, 3].map(i => (
-          <Skeleton key={i} className="h-44 w-full bg-white rounded-3xl border border-gray-100 animate-pulse" />
+          <Skeleton key={i} className="h-44 w-full bg-[#161616] rounded-3xl border border-white/[0.08] animate-pulse" />
         ))}
       </div>
     );
@@ -88,13 +88,13 @@ export default function DriverDashboard() {
 
   return (
     <div className="container mx-auto px-4 space-y-10 sm:space-y-12 max-w-4xl pb-20 py-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 border-b border-gray-100 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 border-b border-white/[0.08] pb-6">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E63946]/10 rounded-2xl border border-[#E63946]/20 flex items-center justify-center shadow-md">
             <Navigation className="w-7 h-7 sm:w-8 sm:h-8 text-[#E63946]" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">Driver Terminal</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Driver Terminal</h1>
             <p className="text-gray-500 font-mono mt-1 text-sm sm:text-base">Callsign: <span className="text-[#E63946] font-bold">{user?.name}</span></p>
           </div>
         </div>
@@ -119,38 +119,38 @@ export default function DriverDashboard() {
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white backdrop-blur-sm border border-[#E63946]/30 shadow-lg rounded-3xl p-5 sm:p-8 relative overflow-hidden"
+                className="bg-[#141414] border border-[#E63946]/30 shadow-lg rounded-3xl p-5 sm:p-8 relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 bg-[#E63946] text-gray-900 px-4 sm:px-6 py-2 text-xs sm:text-sm font-black uppercase tracking-wider rounded-bl-2xl shadow-lg">
+                <div className="absolute top-0 right-0 bg-[#E63946] text-white px-4 sm:px-6 py-2 text-xs sm:text-sm font-black uppercase tracking-wider rounded-bl-2xl shadow-lg">
                   {order.status}
                 </div>
 
                 <div className="space-y-5 sm:space-y-6 pt-2 sm:pt-0">
                   <div className="pr-20 sm:pr-24">
-                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{order.restaurantName}</h3>
-                    <div className="flex items-start gap-2 text-gray-600">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">{order.restaurantName}</h3>
+                    <div className="flex items-start gap-2 text-gray-400">
                       <MapPin className="w-5 h-5 shrink-0 text-[#E63946] mt-0.5" />
                       <p className="text-base sm:text-lg leading-tight">{order.deliveryAddress}</p>
                     </div>
                   </div>
 
-                  <div className="bg-[#FAFAF8] rounded-2xl p-4 sm:p-5 border border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-[#131313] rounded-2xl p-4 sm:p-5 border border-white/[0.06] grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Customer</p>
-                      <p className="text-lg font-bold text-gray-900">{order.customerName}</p>
+                      <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Customer</p>
+                      <p className="text-lg font-bold text-white">{order.customerName}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Order Total</p>
+                      <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Order Total</p>
                       <p className="text-lg font-mono font-bold text-[#E63946]">${(order.total).toFixed(2)}</p>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <div className="pt-4 border-t border-white/[0.06] flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="text-sm font-medium text-gray-500 flex items-center gap-2">
                       <Package className="w-4 h-4" />
                       {order.items.reduce((acc: number, i: any) => acc + i.quantity, 0)} items to deliver
                     </div>
-                    {order.status === "ready" ? (
+                    {(order.status === "ready" || order.status === "assigned") ? (
                       <Button
                         size="lg"
                         onClick={() => deliverOrder.mutate(order.id)}
@@ -160,7 +160,7 @@ export default function DriverDashboard() {
                         Complete Delivery
                       </Button>
                     ) : (
-                      <Button disabled size="lg" className="w-full sm:w-auto bg-[#FAFAF8] text-gray-400 border border-gray-100 font-bold">
+                      <Button disabled size="lg" className="w-full sm:w-auto bg-[#141414] text-gray-500 border border-white/[0.08] font-bold">
                         Awaiting Kitchen...
                       </Button>
                     )}
@@ -173,7 +173,7 @@ export default function DriverDashboard() {
       )}
 
       <div className="space-y-6">
-        <h2 className="text-xl font-bold tracking-tight text-gray-900">Available Pickups</h2>
+        <h2 className="text-xl font-bold tracking-tight text-white">Available Pickups</h2>
         <div className="grid grid-cols-1 gap-4 sm:gap-5">
           <AnimatePresence>
             {availableOrders?.map(order => (
@@ -183,18 +183,18 @@ export default function DriverDashboard() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white backdrop-blur-sm border border-gray-100 hover:border-primary/50 hover:bg-white/80 transition-all rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 shadow-xl group"
+                className="bg-[#141414] border border-white/[0.08] hover:bg-[#181818] hover:border-white/[0.14] transition-all rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 shadow-xl group"
               >
                 <div className="space-y-2 sm:space-y-3 min-w-0">
                   <div className="flex items-center gap-3">
-                    <h3 className="font-bold text-xl sm:text-2xl text-gray-900 group-hover:text-[#E63946] transition-colors truncate">{order.restaurantName}</h3>
-                    <span className="font-mono text-sm bg-white/5 text-gray-500 px-2 py-1 rounded shrink-0">#{order.id}</span>
+                    <h3 className="font-bold text-xl sm:text-2xl text-white group-hover:text-[#E63946] transition-colors truncate">{order.restaurantName}</h3>
+                    <span className="font-mono text-sm bg-[#161616] text-gray-400 px-2 py-1 rounded shrink-0">#{order.id}</span>
                   </div>
-                  <div className="flex items-start gap-2 text-gray-600">
+                  <div className="flex items-start gap-2 text-gray-400">
                     <MapPin className="w-4 h-4 shrink-0 text-[#E63946] mt-1" />
                     <p className="leading-tight text-sm sm:text-base">{order.deliveryAddress}</p>
                   </div>
-                  <div className="text-sm font-medium text-gray-400 flex items-center gap-2">
+                  <div className="text-sm font-medium text-gray-500 flex items-center gap-2">
                     <Package className="w-4 h-4" /> {order.items.reduce((acc: number, i: any) => acc + i.quantity, 0)} items - ${(order.total).toFixed(2)}
                   </div>
                 </div>
@@ -204,7 +204,7 @@ export default function DriverDashboard() {
                   onClick={() => acceptOrder.mutate(order.id)}
                   disabled={acceptOrder.isPending}
                   variant="outline"
-                  className="border-white/20 text-gray-900 hover:bg-[#E63946] hover:text-gray-800 hover:border-primary transition-all shrink-0 font-bold px-6 sm:px-8 py-5 sm:py-6 text-base shadow-lg w-full sm:w-auto"
+                  className="border-white/[0.14] text-white hover:bg-[#E63946] hover:text-white hover:border-[#E63946] transition-all shrink-0 font-bold px-6 sm:px-8 py-5 sm:py-6 text-base shadow-lg w-full sm:w-auto"
                 >
                   Accept Pickup
                 </Button>
@@ -212,10 +212,10 @@ export default function DriverDashboard() {
             ))}
           </AnimatePresence>
           {(!availableOrders || availableOrders.length === 0) && (
-            <div className="text-center py-16 sm:py-20 px-4 border-2 border-dashed border-gray-100 rounded-3xl bg-white/50">
-              <AlertCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <div className="text-center py-16 sm:py-20 px-4 border-2 border-dashed border-white/[0.08] rounded-3xl bg-[#111111]">
+              <AlertCircle className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <p className="text-lg font-bold text-gray-400">No pickups available</p>
-              <p className="text-gray-400 mt-1">Stand by — new orders will appear here in real time.</p>
+              <p className="text-gray-500 mt-1">Stand by — new orders will appear here in real time.</p>
             </div>
           )}
         </div>

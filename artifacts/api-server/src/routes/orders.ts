@@ -147,7 +147,7 @@ router.get("/orders/:id", requireAuth, async (req, res): Promise<void> => {
   res.json(serializeOrder(order));
 });
 
-router.patch("/orders/:id/status", requireAuth, requireRole("restaurant"), async (req, res): Promise<void> => {
+router.patch("/orders/:id/status", requireAuth, requireRole("restaurant", "driver"), async (req, res): Promise<void> => {
   const paramsResult = UpdateOrderStatusParams.safeParse(req.params);
   if (!paramsResult.success) {
     res.status(400).json({ error: paramsResult.error.message });
@@ -163,12 +163,24 @@ router.patch("/orders/:id/status", requireAuth, requireRole("restaurant"), async
   const raw = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const id = parseInt(raw, 10);
 
-  // Verify this order belongs to a restaurant owned by this user
-  const restaurantIds = await getOwnerRestaurantIds(req.user!.id);
-  const [existing] = await db.select({ restaurantId: ordersTable.restaurantId }).from(ordersTable).where(eq(ordersTable.id, id));
-  if (!existing || (restaurantIds.length > 0 && !restaurantIds.includes(existing.restaurantId))) {
-    res.status(403).json({ error: "Not authorized to update this order" });
+  // Verify authorization: restaurant owners can update their orders, drivers can update their assigned orders
+  const [existing] = await db.select().from(ordersTable).where(eq(ordersTable.id, id));
+  if (!existing) {
+    res.status(404).json({ error: "Order not found" });
     return;
+  }
+
+  if (req.user!.role === "restaurant") {
+    const restaurantIds = await getOwnerRestaurantIds(req.user!.id);
+    if (!restaurantIds.includes(existing.restaurantId)) {
+      res.status(403).json({ error: "Not authorized to update this order" });
+      return;
+    }
+  } else if (req.user!.role === "driver") {
+    if (existing.driverId !== req.user!.id) {
+      res.status(403).json({ error: "Not authorized to update this order" });
+      return;
+    }
   }
 
   const [order] = await db.update(ordersTable)

@@ -62,3 +62,31 @@ Thumbs.db
 # Logs
 *.log
 pino-*.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Build artifacts
+*.tsbuildinfo
+dist/
+tmp/
+out-tsc/
+
+# Test coverage
+coverage/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo

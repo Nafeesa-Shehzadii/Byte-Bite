@@ -13,6 +13,7 @@ import OrderTracker from "./pages/customer/order-tracker";
 import OrderHistory from "./pages/customer/order-history";
 import RestaurantDashboard from "./pages/restaurant/dashboard";
 import RestaurantOnboarding from "./pages/restaurant/onboarding";
+import ManageMenu from "./pages/restaurant/manage-menu";
 import DriverDashboard from "./pages/driver/dashboard";
 import ProfilePage from "./pages/profile";
 import LoginPage from "./pages/login";
@@ -75,6 +76,7 @@ function AppRouter() {
       <Route path="/profile" component={ProfilePage} />
       <Route path="/restaurant" component={RestaurantDashboard} />
       <Route path="/restaurant/add" component={RestaurantOnboarding} />
+      <Route path="/restaurant/:id/menu" component={ManageMenu} />
       <Route path="/driver" component={DriverDashboard} />
       <Route component={NotFound} />
     </Switch>
